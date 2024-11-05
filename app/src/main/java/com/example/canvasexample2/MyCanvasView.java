@@ -73,9 +73,10 @@ public class MyCanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.drawBitmap(mExtraBitmap, 0, 0, null);
     }
+
+
 
 
     public void changeBackgroundColor(int color)
@@ -83,7 +84,6 @@ public class MyCanvasView extends View {
         mExtraCanvas = new Canvas(mExtraBitmap);
         mExtraCanvas.drawColor(color);
         invalidate();
-
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -121,5 +121,18 @@ public class MyCanvasView extends View {
     }
     private void touchUp() {
         mPath.reset();
+    }
+    public void changeBrushColor(int color)
+    {
+        mDrawColor = color;
+        mPaint.setColor(mDrawColor);
+    }
+    public void eraser()
+    {
+        mDrawColor = mBackgroundColor;
+        mPaint.setColor(mDrawColor);
+    }
+    public void delete(){
+        changeBackgroundColor(mBackgroundColor);
     }
 }
