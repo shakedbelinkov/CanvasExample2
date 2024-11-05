@@ -35,7 +35,7 @@ public class MyCanvasView extends View {
         super(context,attributeSet);
         this.mExtraBitmap = mExtraBitmap;
         mBackgroundColor = ResourcesCompat.getColor(getResources(),R.color.white_board, null);
-        mDrawColor = ResourcesCompat.getColor(getResources(),R.color.opaque_orange, null);
+        mDrawColor = ResourcesCompat.getColor(getResources(),R.color.black, null);
 
         mPath = new Path();
         mPaint = new Paint();
@@ -51,7 +51,7 @@ public class MyCanvasView extends View {
         super(context);
         this.mExtraBitmap = mExtraBitmap;
         mBackgroundColor = ResourcesCompat.getColor(getResources(),R.color.white_board, null);
-        mDrawColor = ResourcesCompat.getColor(getResources(),R.color.opaque_orange, null);
+        mDrawColor = ResourcesCompat.getColor(getResources(),R.color.black, null);
 
         mPath = new Path();
         mPaint = new Paint();
