@@ -3,9 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="opaque_orange">#FF5722</color>
-    <color name="opaque_yellow">#FFC107</color>
-    <color name="Red">#ff0000</color>
-    <color name="Blue">#0055ff</color>
-    <color name="Yellow">#ffff00</color>
-    <color name="Green">#02c709</color>
+    <color name="white_board">#F4EDE9</color>
 </resources>
