@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/startButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#66D4F6"
     tools:context=".MainActivity">
+
 
 
     <com.example.canvasexample2.MyCanvasView
@@ -141,22 +143,57 @@
         android:id="@+id/eraser"
         android:layout_width="79dp"
         android:layout_height="76dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="1dp"
         android:onClick="eraser"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Blue"
+        app:layout_constraintTop_toBottomOf="@+id/Pink"
         app:srcCompat="@drawable/eraser" />
+
+    <Button
+        android:id="@+id/size1"
+        android:layout_width="23dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#000000"
+        android:onClick="changeBrushSize"
+        android:tag="12"
+        app:layout_constraintStart_toEndOf="@+id/eraser"
+        app:layout_constraintTop_toBottomOf="@+id/Pink" />
+
+    <Button
+        android:id="@+id/size2"
+        android:layout_width="28dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#000000"
+        android:onClick="changeBrushSize"
+        android:tag="30"
+        app:layout_constraintStart_toEndOf="@+id/size1"
+        app:layout_constraintTop_toBottomOf="@+id/Purple" />
+
+    <Button
+        android:id="@+id/size3"
+        android:layout_width="33dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#000000"
+        android:onClick="changeBrushSize"
+        android:tag="50"
+        app:layout_constraintStart_toEndOf="@+id/size2"
+        app:layout_constraintTop_toBottomOf="@+id/Brown" />
 
     <ImageView
         android:id="@+id/deleteButtun"
         android:layout_width="79dp"
         android:layout_height="76dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginEnd="38dp"
         android:onClick="delete"
-        app:layout_constraintStart_toEndOf="@+id/eraser"
-        app:layout_constraintTop_toBottomOf="@+id/Yellow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/White"
         app:srcCompat="@drawable/trash3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

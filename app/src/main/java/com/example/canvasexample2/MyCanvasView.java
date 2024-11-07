@@ -135,4 +135,7 @@ public class MyCanvasView extends View {
     public void delete(){
         changeBackgroundColor(mBackgroundColor);
     }
+    public void changeBrushSize(int size){
+        mPaint.setStrokeWidth(size);
+    }
 }
