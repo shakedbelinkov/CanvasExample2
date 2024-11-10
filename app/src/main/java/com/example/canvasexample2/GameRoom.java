@@ -6,11 +6,16 @@ import java.util.ArrayList;
 public class GameRoom {
     private int playerNum;
     private ArrayList<String> uIDs;
+    //add name array
     public GameRoom(int playerNum)
     {
         this.playerNum=playerNum;
         this.uIDs=new ArrayList<>();
     }
+
+    public GameRoom() {
+    }
+
     public int getPlayer()
     {
         return this.playerNum;
@@ -31,6 +36,8 @@ public class GameRoom {
     public void AddUser(String uId)
     {
         if (this.uIDs.size()<playerNum)
-        this.uIDs.add(uId);
+            this.uIDs.add(uId);
     }
+
+
 }
