@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "437010892217",
+    "project_id": "connection-55997",
+    "storage_bucket": "connection-55997.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437010892217:android:96edc0307ffa9b9116a268",
+        "android_client_info": {
+          "package_name": "com.example.canvasexample2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXf93rA3byJeCKdV-qYbYl26AXfnD4Ebg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
