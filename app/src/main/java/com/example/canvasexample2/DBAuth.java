@@ -13,16 +13,22 @@ public class DBAuth {
         void onComplete(boolean s);
     }
     private AuthComplete authComplete;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+
+
 
     public DBAuth(AuthComplete authComplete)
     {
-        mAuth = FirebaseAuth.getInstance();
         this.authComplete=authComplete;
     }
     public DBAuth()
     {
-        mAuth = FirebaseAuth.getInstance();
+    }
+
+    public boolean isUserSigned()
+    {
+        return mAuth.getCurrentUser()!=null;
     }
     public void AddUser(String email,String password)
     {
@@ -32,5 +38,16 @@ public class DBAuth {
                 authComplete.onComplete(task.isSuccessful());
             }
         });
+    }
+
+    public String getUserEmail()
+    {
+        if(this.isUserSigned())
+        {
+            return mAuth.getCurrentUser().getEmail();
+        }
+
+        return "";
+
     }
 }

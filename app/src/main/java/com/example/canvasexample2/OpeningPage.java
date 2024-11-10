@@ -1,5 +1,6 @@
 package com.example.canvasexample2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,8 +11,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class OpeningPage extends AppCompatActivity {
+import com.google.firebase.auth.FirebaseAuth;
 
+public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete {
+
+    private DBAuth mauth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,14 +26,45 @@ public class OpeningPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        mauth = new DBAuth(this); // pass the acitivty reference to the class
+
+        if(mauth.isUserSigned())
+        {
+            // move to Main activity>>
+        }
     }
 
     public void SignUp(View view) {
-        TextView usernameTv=findViewById(R.id.username);
         TextView emailTv=findViewById(R.id.email);
         TextView passwordTv=findViewById(R.id.password);
-        String username=usernameTv.getText().toString();
         String email=emailTv.getText().toString();
         String password=passwordTv.getText().toString();
+        mauth.AddUser(email,password);
+
+    }
+
+    @Override
+    public void onComplete(boolean s) {
+
+      if(s) // this means we authenticated successfully
+      {
+          // set email, points, name
+          TextView usernameTv=findViewById(R.id.username);
+
+          String username=usernameTv.getText().toString();
+
+          Profile p = new Profile();
+          p.setPoints(Consts.INITIAL_POINTS);
+          p.setEmail(mauth.getUserEmail());
+          p.setName(username);
+
+
+          // call DBUSers to add this profile to the DB
+
+
+
+      }
+
     }
 }

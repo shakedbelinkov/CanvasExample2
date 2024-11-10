@@ -3,11 +3,16 @@ package com.example.canvasexample2;
 public class Profile {
     private String name;
     private String email;
-    private String password;
-    public Profile(String name,String email,String password){
+    private int points;
+
+
+    public Profile() {
+    }
+
+    public Profile(String name, String email, int points){
         this.name=name;
         this.email=email;
-        this.password=password;
+        this.points = points;
     }
     public String getEmail() {
         return email;
@@ -15,14 +20,6 @@ public class Profile {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -35,6 +32,14 @@ public class Profile {
 
     @Override
     public String toString() {
-        return "UserData{" +"email='" + email + '\'' +", password='" + password + '\'' +", name='" + name +'}';
+        return "UserData{" +"email='" + email + '\'' +", name='" + name +'}';
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }
