@@ -1,16 +1,32 @@
 package com.example.canvasexample2;
 
-public class DBUser {
-    private Profile p;
-    public DBUser()
-    {
+import androidx.annotation.NonNull;
 
-    }
-    public Profile getProfile()
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+public class DBUser {
+    public interface AddUserComplete
     {
-        return p;
+        void onUserComplete(boolean s);
     }
-    public void setProfile(Profile p){
-        this.p=p;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private AddUserComplete addUserComplete;
+    public DBUser(AddUserComplete a)
+    {
+        this.addUserComplete = a;
     }
+
+
+    public void addProfile(Profile p)
+    {
+        db.collection("profiles").document(p.getuID()).set(p).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+               addUserComplete.onUserComplete(task.isSuccessful());
+            }
+        });
+    }
+
 }

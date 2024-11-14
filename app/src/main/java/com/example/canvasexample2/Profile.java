@@ -5,6 +5,16 @@ public class Profile {
     private String email;
     private int points;
 
+    public String getuID() {
+        return uID;
+    }
+
+    public void setuID(String uID) {
+        this.uID = uID;
+    }
+
+    private String uID;
+
 
     public Profile() {
     }

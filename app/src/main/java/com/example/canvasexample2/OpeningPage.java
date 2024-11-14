@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete {
+public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete,DBGameRoom.GameRoomComplete {
 
     private DBAuth mauth;
     @Override
@@ -41,7 +42,6 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         String email=emailTv.getText().toString();
         String password=passwordTv.getText().toString();
         mauth.AddUser(email,password);
-
     }
 
     @Override
@@ -58,13 +58,26 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
           p.setPoints(Consts.INITIAL_POINTS);
           p.setEmail(mauth.getUserEmail());
           p.setName(username);
+          p.setuID(mauth.getUID());
 
+          DBUser  dbUser = new DBUser(this);
 
-          // call DBUSers to add this profile to the DB
-
-
-
+          dbUser.addProfile(p);
+          // call DBUsers to add this profile to the DB
+          Intent intent=new Intent(OpeningPage.this, GameLobby.class);
+          intent.putExtra("name",username);
+          startActivity(intent);
       }
+
+    }
+
+    @Override
+    public void onUserComplete(boolean s) {
+        Toast.makeText(this,"profile " + s,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onGameRoomComplete(boolean s) {
 
     }
 }

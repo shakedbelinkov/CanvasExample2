@@ -46,8 +46,12 @@ public class DBAuth {
         {
             return mAuth.getCurrentUser().getEmail();
         }
-
         return "";
+    }
 
+
+    public String getUID()
+    {
+        return mAuth.getUid();
     }
 }
