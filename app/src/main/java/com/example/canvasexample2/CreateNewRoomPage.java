@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class CreateNewRoomPage extends AppCompatActivity {
+public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Spinner spinnerPlayer,spinnerRounds,spinnerTime;
     @Override
@@ -39,8 +40,16 @@ public class CreateNewRoomPage extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTime.setAdapter(adapter3);
 
+        spinnerTime.setOnItemSelectedListener(this);
+
     }
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         String answer= parent.getItemAtPosition(pos).toString();
+        Toast.makeText(this," Choice is " + parent.getItemAtPosition(pos),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
