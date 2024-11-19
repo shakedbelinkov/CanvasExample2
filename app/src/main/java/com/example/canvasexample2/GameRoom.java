@@ -5,17 +5,36 @@ import java.util.ArrayList;
 
 public class GameRoom {
     private int playerNum;
+    private int roundNum;
+    private int roundTime;
     private ArrayList<String> uIDs;
+    private ArrayList<String> names;
     //add name array
-    public GameRoom(int playerNum)
+    public GameRoom(int playerNum,int roundNum,int roundTime)
     {
         this.playerNum=playerNum;
+        this.roundNum=roundNum;
+        this.roundTime=roundTime;
         this.uIDs=new ArrayList<>();
+        this.names=new ArrayList<>();
     }
 
     public GameRoom() {
     }
+    public int getRoundNum() {
+        return roundNum;
+    }
 
+    public void setRoundNum(int roundNum) {
+        this.roundNum = roundNum;
+    }
+    public int getRoundTime() {
+        return roundTime;
+    }
+
+    public void setRoundTime(int roundTime) {
+        this.roundTime = roundTime;
+    }
     public int getPlayer()
     {
         return this.playerNum;

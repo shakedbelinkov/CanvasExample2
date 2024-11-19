@@ -16,6 +16,10 @@ public class DBAuth {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
+    public static String getUserUID()
+    {
+        return  FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
 
 
     public DBAuth(AuthComplete authComplete)

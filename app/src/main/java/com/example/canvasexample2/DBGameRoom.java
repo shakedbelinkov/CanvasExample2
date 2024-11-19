@@ -20,13 +20,13 @@ public class DBGameRoom {
     public DBGameRoom(){
 
     }
-    public void addGameRoom(GameRoom gm)
+    public void addGameRoom(GameRoom gm,String uID)
     {
-        /*db.collection("GameRooms").set(gm).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("GameRooms").document(uID).set(gm).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 addGameRoomComplete.onGameRoomComplete(task.isSuccessful());
             }
-        });*/
+        });
     }
 }

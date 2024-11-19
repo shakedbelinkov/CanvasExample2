@@ -33,6 +33,8 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         if(mauth.isUserSigned())
         {
             // move to Main activity>>
+            Intent intent=new Intent(OpeningPage.this, GameLobby.class);
+            startActivity(intent);
         }
     }
 
