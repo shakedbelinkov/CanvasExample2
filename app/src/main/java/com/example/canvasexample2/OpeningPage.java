@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete,DBGameRoom.GameRoomComplete {
+public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete {
 
     private DBAuth mauth;
     @Override
@@ -78,8 +78,4 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         Toast.makeText(this,"profile " + s,Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onGameRoomComplete(boolean s) {
-
-    }
 }

@@ -20,7 +20,7 @@ public class GameLobby extends AppCompatActivity {
     private Dialog d;
     private EditText gameRoomCode;
     private Button btnCustomLogin;
-    private Button loginButton;
+    private String code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +30,6 @@ public class GameLobby extends AppCompatActivity {
         String name = takeDetails.getStringExtra("name");
         textView=findViewById(R.id.playerName);
         textView.setText("Hi "+name);
-        loginButton=findViewById(R.id.LoginButton);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -42,5 +40,23 @@ public class GameLobby extends AppCompatActivity {
     public void createNewRoom(View view) {
         Intent intent=new Intent(GameLobby.this, CreateNewRoomPage.class);
         startActivity(intent);
+    }
+
+    public void createDialog(View view) {
+        d= new Dialog(this);
+        d.setContentView(R.layout.dialoglogin);
+        d.setTitle("Login");
+        d.setCancelable(true);
+        gameRoomCode=(EditText)d.findViewById(R.id.gameRoomCode);
+        btnCustomLogin=(Button)d.findViewById(R.id.loginButton);
+        btnCustomLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameRoomCode=findViewById(R.id.gameRoomCode);
+                code=gameRoomCode.getText().toString();
+                d.dismiss();
+            }
+        });
+        d.show();
     }
 }

@@ -2,6 +2,7 @@ package com.example.canvasexample2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +25,21 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_new_room_page);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+        initUI();
+
+
+
+    }
+
+    private void initUI() {
+
         spinnerPlayer=findViewById(R.id.numOfPlayers);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.numberOfPlayer,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -39,17 +55,19 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
         spinnerTime.setAdapter(adapter3);
 
         spinnerTime.setOnItemSelectedListener(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
+        spinnerRounds.setOnItemSelectedListener(this);
+        spinnerPlayer.setOnItemSelectedListener(this);
 
     }
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+        if(!(view instanceof Spinner))
+        {
+            return;
+        }
         String answer= parent.getItemAtPosition(pos).toString();
-        String name = (String) view.getTag();
+        String name = view.getTag().toString();
 
         int result = Integer.valueOf(answer);
 
@@ -74,7 +92,7 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
     }
 
     public void startNextActivity(View view) {
-        intent=new Intent(CreateNewRoomPage.this,MainActivity.class);
+        intent=new Intent(CreateNewRoomPage.this,WaitingRoom.class);
         intent.putExtra("numPlayers",numPlayers);
         intent.putExtra("numRounds",numRounds);
         intent.putExtra("timeRounds",time);

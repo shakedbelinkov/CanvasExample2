@@ -43,6 +43,10 @@ public class GameRoom {
     {
         return this.uIDs;
     }
+    public ArrayList<String> getNames()
+    {
+        return this.uIDs;
+    }
 
     public void setPlayer(int playerNum)
     {
