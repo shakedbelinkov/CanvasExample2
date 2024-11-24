@@ -1,14 +1,17 @@
 package com.example.canvasexample2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameRoom {
-    private int playerNum;
-    private int roundNum;
-    private int roundTime;
-    private ArrayList<String> uIDs;
-    private ArrayList<String> names;
+    private int playerNum;//max players on this game room
+    private int roundNum;//number of rounds
+    private int roundTime;//time for a round
+
+
+
+    private int counterOfPlayers=0;//number of player now
+    private ArrayList<String> uIDs;//list of UID
+    private ArrayList<String> names;//list of names
     //add name array
     public GameRoom(int playerNum,int roundNum,int roundTime)
     {
@@ -21,8 +24,25 @@ public class GameRoom {
 
     public GameRoom() {
     }
+    public void setPlayerNum(int playerNum) {
+        this.playerNum = playerNum;
+    }
+
+    public void setCounterOfPlayers(int counterOfPlayers) {
+        this.counterOfPlayers = counterOfPlayers;
+    }
+
+
+
+    public void setNames(ArrayList<String> names) {
+        this.names = names;
+    }
     public int getRoundNum() {
         return roundNum;
+    }
+    public int getCounterOfPlayers()
+    {
+        return this.counterOfPlayers;
     }
 
     public void setRoundNum(int roundNum) {
@@ -35,7 +55,7 @@ public class GameRoom {
     public void setRoundTime(int roundTime) {
         this.roundTime = roundTime;
     }
-    public int getPlayer()
+    public int getPlayerNum()
     {
         return this.playerNum;
     }
@@ -45,21 +65,24 @@ public class GameRoom {
     }
     public ArrayList<String> getNames()
     {
-        return this.uIDs;
+        return this.names;
     }
 
-    public void setPlayer(int playerNum)
-    {
-        this.playerNum=playerNum;
-    }
+
     public void setUIDs(ArrayList<String> uIDs)
     {
         this.uIDs=uIDs;
     }
-    public void AddUser(String uId)
+    public boolean AddUser(String uId,String name)
     {
-        if (this.uIDs.size()<playerNum)
+        //add the user to the lists
+        if (this.counterOfPlayers<playerNum) {
             this.uIDs.add(uId);
+            this.names.add(name);
+            this.counterOfPlayers++;
+            return true;
+        }
+        return false;
     }
 
 

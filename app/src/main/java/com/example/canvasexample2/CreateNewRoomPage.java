@@ -39,7 +39,7 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
     }
 
     private void initUI() {
-
+        //spinners have information for the game room
         spinnerPlayer=findViewById(R.id.numOfPlayers);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.numberOfPlayer,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -61,6 +61,7 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        //when someone select option on one of the spinner. i put the value on the correct variable
 
         if(!(view instanceof Spinner))
         {
@@ -89,13 +90,18 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+        //if nothing selected
     }
 
     public void startNextActivity(View view) {
+        //when the user finish to choose we move to the next activity=> WaitingRoom
+        Intent takeDetails = getIntent();
+        String name = takeDetails.getStringExtra("name");
         intent=new Intent(CreateNewRoomPage.this,WaitingRoom.class);
         intent.putExtra("numPlayers",numPlayers);
         intent.putExtra("numRounds",numRounds);
         intent.putExtra("timeRounds",time);
+        intent.putExtra("name",name);
         startActivity(intent);
 
     }

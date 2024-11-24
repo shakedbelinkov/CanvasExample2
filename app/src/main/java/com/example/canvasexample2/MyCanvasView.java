@@ -36,7 +36,7 @@ public class MyCanvasView extends View {
         this.mExtraBitmap = mExtraBitmap;
         mBackgroundColor = ResourcesCompat.getColor(getResources(),R.color.white_board, null);
         mDrawColor = ResourcesCompat.getColor(getResources(),R.color.black, null);
-
+        //create new path and paint and set style and stroke
         mPath = new Path();
         mPaint = new Paint();
         mPaint.setColor(mDrawColor);
@@ -52,7 +52,7 @@ public class MyCanvasView extends View {
         this.mExtraBitmap = mExtraBitmap;
         mBackgroundColor = ResourcesCompat.getColor(getResources(),R.color.white_board, null);
         mDrawColor = ResourcesCompat.getColor(getResources(),R.color.black, null);
-
+        //create new path and paint and set style and stroke
         mPath = new Path();
         mPaint = new Paint();
         mPaint.setColor(mDrawColor);
@@ -91,13 +91,16 @@ public class MyCanvasView extends View {
         float y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                //when the moving start-start the path on x,y
                 touchStart(x, y);
                 break;
             case MotionEvent.ACTION_MOVE:
+                //when the brush move-start a path to x,y
                 touchMove(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                //when the moving stop-end the painting
                 touchUp();
                 break;
             default:
@@ -105,11 +108,13 @@ public class MyCanvasView extends View {
         return true;
     }
     private void touchStart(float x, float y) {
+        //start the path on x,y
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
     }
     private void touchMove(float x, float y) {
+        //move the path to x,y
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
@@ -123,19 +128,25 @@ public class MyCanvasView extends View {
         mPath.reset();
     }
     public void changeBrushColor(int color)
+            //change the color of the brush to "color"
     {
         mDrawColor = color;
         mPaint.setColor(mDrawColor);
     }
     public void eraser()
+            //change the color of the brush to the color of the background(eraser)
     {
         mDrawColor = mBackgroundColor;
         mPaint.setColor(mDrawColor);
     }
-    public void delete(){
+    public void delete()
+            //put a layer of color (background color)
+    {
         changeBackgroundColor(mBackgroundColor);
     }
-    public void changeBrushSize(int size){
+    public void changeBrushSize(int size)
+            //change the size of the brush
+    {
         mPaint.setStrokeWidth(size);
     }
 }

@@ -39,6 +39,7 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
     }
 
     public void SignUp(View view) {
+        //get the information of the user
         TextView emailTv=findViewById(R.id.email);
         TextView passwordTv=findViewById(R.id.password);
         String email=emailTv.getText().toString();
@@ -72,7 +73,6 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
       }
 
     }
-
     @Override
     public void onUserComplete(boolean s) {
         Toast.makeText(this,"profile " + s,Toast.LENGTH_LONG).show();
