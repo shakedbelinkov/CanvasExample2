@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="177dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="84dp"
         android:layout_marginEnd="177dp"
         android:text="Players"
         android:textSize="16sp"
@@ -48,15 +48,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/GameRoomCodeUID" />
 
-    <TextView
-        android:id="@+id/firstPLayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="177dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="177dp"
-        android:text="TextView"
+    <Button
+        android:id="@+id/copyButton"
+        android:layout_width="134dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="142dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="136dp"
+        android:onClick="copyCode"
+        android:text="copy code"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/GameRoomCodeUID" />
+
+    <ListView
+
+        android:id="@+id/playersList"
+        android:layout_width="408dp"
+        android:layout_height="429dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9">
+    </ListView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

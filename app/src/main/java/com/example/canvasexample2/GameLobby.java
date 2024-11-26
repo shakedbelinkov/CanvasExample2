@@ -93,9 +93,9 @@ public class GameLobby extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful())
-                                            Log.d("GAME ROOM ", "onComplete: added plaeyr name success");
+                                            Log.d("GAME ROOM ", "onComplete: added player name success");
                                         else
-                                            Log.d("GAME ROOM ", "onComplete: added plaeyr name FAIL");
+                                            Log.d("GAME ROOM ", "onComplete: added player name FAIL");
                                     }
                                 });
                             }

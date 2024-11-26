@@ -18,7 +18,6 @@ public class DBGameRoom {
         this.addGameRoomComplete = a;
     }
     public DBGameRoom(){
-
     }
     public void addGameRoom(GameRoom gm,String uID)
     {

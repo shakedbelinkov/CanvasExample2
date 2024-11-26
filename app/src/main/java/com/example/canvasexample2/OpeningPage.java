@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete {
 
     private DBAuth mauth;
+    private String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,7 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
           // set email, points, name
           TextView usernameTv=findViewById(R.id.username);
 
-          String username=usernameTv.getText().toString();
+           username=usernameTv.getText().toString();
 
           Profile p = new Profile();
           p.setPoints(Consts.INITIAL_POINTS);
@@ -67,15 +68,20 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
 
           dbUser.addProfile(p);
           // call DBUsers to add this profile to the DB
-          Intent intent=new Intent(OpeningPage.this, GameLobby.class);
-          intent.putExtra("name",username);
-          startActivity(intent);
+
       }
 
     }
     @Override
     public void onUserComplete(boolean s) {
         Toast.makeText(this,"profile " + s,Toast.LENGTH_LONG).show();
+
+        if(s)
+        {
+            Intent intent=new Intent(OpeningPage.this, GameLobby.class);
+            intent.putExtra("name",username);
+            startActivity(intent);
+        }
     }
 
 }
