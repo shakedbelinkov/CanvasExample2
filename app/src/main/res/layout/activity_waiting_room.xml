@@ -53,6 +53,7 @@
         android:layout_width="134dp"
         android:layout_height="42dp"
         android:layout_marginStart="142dp"
+
         android:layout_marginTop="11dp"
         android:layout_marginEnd="136dp"
         android:onClick="copyCode"
@@ -64,12 +65,14 @@
     <ListView
 
         android:id="@+id/playersList"
-        android:layout_width="408dp"
-        android:layout_height="429dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="3dp"
+        android:layout_width="366dp"
+        android:layout_height="374dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="23dp"
+        android:background="#EDEDED"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9">
-    </ListView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"></ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

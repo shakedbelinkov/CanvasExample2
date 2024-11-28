@@ -11,10 +11,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
@@ -24,6 +31,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     private DBGameRoom dbGameRoom;
     private int counterPlayers=0;
     private String uidRef;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<String> names;
     ListView lv;
     ArrayAdapter<String> arrayAdapter;
@@ -61,17 +69,32 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         //put the game code
         TextView t=findViewById(R.id.GameRoomCodeUID);
         t.setText(uidRef);
-        //the list view does not working
-        lv=findViewById(R.id.playersList);
-        names.add("shaked");
-        arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
-        lv.setAdapter(arrayAdapter);
+
+
 
     }
 
     @Override
     public void onGameRoomComplete(boolean s) {
         Toast.makeText(this,"GameRoom " + s,Toast.LENGTH_LONG).show();
+
+
+        //add the player name to the list view
+        db.collection("GameRooms").document(uidRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                if(value.exists())
+                {
+                    //it not working
+                    GameRoom gm=value.toObject(GameRoom.class);
+                    names=gm.getNames();
+                    lv=findViewById(R.id.playersList);
+                    arrayAdapter=new ArrayAdapter<String>(WaitingRoom.this, android.R.layout.simple_list_item_1,names);
+                    lv.setAdapter(arrayAdapter);
+                }
+            }
+        });
 
     }
 

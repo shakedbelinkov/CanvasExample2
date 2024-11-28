@@ -37,6 +37,7 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
             Intent intent=new Intent(OpeningPage.this, GameLobby.class);
             startActivity(intent);
         }
+
     }
 
     public void SignUp(View view) {
