@@ -86,7 +86,6 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
 
                 if(value.exists())
                 {
-                    //it not working
                     GameRoom gm=value.toObject(GameRoom.class);
                     names=gm.getNames();
                     lv=findViewById(R.id.playersList);

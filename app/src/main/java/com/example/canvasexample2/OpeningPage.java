@@ -29,12 +29,13 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
             return insets;
         });
 
-        mauth = new DBAuth(this); // pass the acitivty reference to the class
+        mauth = new DBAuth(this); // pass the activity reference to the class
 
         if(mauth.isUserSigned())
         {
             // move to Main activity>>
             Intent intent=new Intent(OpeningPage.this, GameLobby.class);
+            intent.putExtra("name",username);
             startActivity(intent);
         }
 
@@ -46,7 +47,10 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         TextView passwordTv=findViewById(R.id.password);
         String email=emailTv.getText().toString();
         String password=passwordTv.getText().toString();
-        mauth.AddUser(email,password);
+        TextView usernameTv=findViewById(R.id.username);
+
+        username=usernameTv.getText().toString();
+        mauth.AddUser(email,password,username);
     }
 
     @Override
@@ -54,10 +58,13 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
 
       if(s) // this means we authenticated successfully
       {
-          // set email, points, name
-          TextView usernameTv=findViewById(R.id.username);
 
-           username=usernameTv.getText().toString();
+          // update FirebaseUser with name
+
+
+
+          // set email, points, name
+
 
           Profile p = new Profile();
           p.setPoints(Consts.INITIAL_POINTS);
@@ -80,9 +87,12 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         if(s)
         {
             Intent intent=new Intent(OpeningPage.this, GameLobby.class);
-            intent.putExtra("name",username);
             startActivity(intent);
         }
     }
 
+    public void LogIn(View view) {
+        Intent intent=new Intent(OpeningPage.this, LogInPage.class);
+        startActivity(intent);
+    }
 }

@@ -35,8 +35,8 @@ public class GameLobby extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game_lobby);
-        Intent takeDetails = getIntent();
-        name = takeDetails.getStringExtra("name");
+
+        name = DBAuth.getUserName();
         textView=findViewById(R.id.playerName);
         textView.setText("Hi "+name);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -85,7 +85,7 @@ public class GameLobby extends AppCompatActivity {
                         // this means we do not exceed the max num of players
 
                             //LOCALLY!!
-                            if(gameRoom.AddUser(DBAuth.getUserUID(), "MOSHE")) {
+                            if(gameRoom.AddUser(DBAuth.getUserUID(), DBAuth.getUserName())) {
 
 
                                 // set in the firebase
