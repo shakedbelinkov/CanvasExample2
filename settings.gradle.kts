@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CanvasExample2"
+rootProject.name = "Shcrible"
 include(":app")
  

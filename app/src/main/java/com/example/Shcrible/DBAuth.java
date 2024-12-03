@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import androidx.annotation.NonNull;
 
@@ -75,7 +75,13 @@ public class DBAuth {
     }
     public void LogIn(String email, String password)
     {
-        mAuth.signInWithEmailAndPassword(email,password);
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful())
+                    authComplete.onComplete(task.isSuccessful());
+            }
+        });
     }
 
     public String getUserEmail()

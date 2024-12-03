@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import java.util.ArrayList;
 
@@ -83,6 +83,20 @@ public class GameRoom {
             return true;
         }
         return false;
+    }
+    public boolean deleteUser(String uId)
+    {
+        //add the user to the lists
+        int index=999;
+        for (int i=0;i<counterOfPlayers;i++)
+            if (uIDs.get(i)==uId)
+                index=i;
+        if (index==999)
+            return false;
+        this.uIDs.remove(index);
+        this.names.remove(index);
+        this.counterOfPlayers--;
+        return true;
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -49,8 +49,8 @@ public class GameLobby extends AppCompatActivity {
     public void createNewRoom(View view) {
         //move activity=> CreateNewRoomPage
         Intent intent=new Intent(GameLobby.this, CreateNewRoomPage.class);
-        intent.putExtra("name",name);
         startActivity(intent);
+        finish();
     }
 
     public void createDialog(View view) {
@@ -73,7 +73,9 @@ public class GameLobby extends AppCompatActivity {
         d.show();
     }
     public void connectToTheGameRoom(String code)
+            //add the user to the game room
     {
+        //get the data
         db.collection("GameRooms").document(code).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -92,8 +94,16 @@ public class GameLobby extends AppCompatActivity {
                                 db.collection("GameRooms").document(code).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful())
+                                        if (task.isSuccessful()) {
                                             Log.d("GAME ROOM ", "onComplete: added player name success");
+
+                                            // move to waiting room
+                                            Intent intent=new Intent(GameLobby.this,WaitingRoom.class);
+                                            intent.putExtra("gameRoomCode",code);
+                                            intent.putExtra("isHost",2);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                         else
                                             Log.d("GAME ROOM ", "onComplete: added player name FAIL");
                                     }

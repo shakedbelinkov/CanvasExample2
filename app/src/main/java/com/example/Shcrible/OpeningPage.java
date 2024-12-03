@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.google.firebase.auth.FirebaseAuth;
 
 public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete {
 
@@ -37,6 +35,7 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
             Intent intent=new Intent(OpeningPage.this, GameLobby.class);
             intent.putExtra("name",username);
             startActivity(intent);
+            finish();
         }
 
     }
@@ -88,11 +87,13 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         {
             Intent intent=new Intent(OpeningPage.this, GameLobby.class);
             startActivity(intent);
+            finish();
         }
     }
 
     public void LogIn(View view) {
         Intent intent=new Intent(OpeningPage.this, LogInPage.class);
         startActivity(intent);
+        finish();
     }
 }

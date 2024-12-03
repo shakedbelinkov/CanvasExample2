@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.canvasexample2"
+    namespace = "com.example.Shcrible"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.canvasexample2"
+        applicationId = "com.example.Shcrible"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

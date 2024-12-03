@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 public class Profile {
     private String name;

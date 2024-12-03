@@ -1,9 +1,10 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -18,6 +19,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,9 +30,9 @@ import java.util.ArrayList;
 
 public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoomComplete
 {
+    private Intent takeDetails;
     private int numPlayers,numRounds,timeRounds;//information for the game room
     private DBGameRoom dbGameRoom;
-    private int counterPlayers=0;
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<String> names;
@@ -50,11 +53,29 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
 
     private void initUI() {
         //get the information from the
-        Intent takeDetails = getIntent();
+
+        // 1 -if I am the host
+
+        // 2 - if I am a player that joins an existing room
+        //          if i am not the host
+        //              get the code from the intent
+        takeDetails = getIntent();
+        int isHost=takeDetails.getIntExtra("isHost",1);
+        if (isHost==1)
+            host();
+        else
+            player();
+        //put the game code
+        TextView t=findViewById(R.id.GameRoomCodeUID);
+        t.setText(uidRef);
+    }
+    public void host()
+            //create new game room
+    {
         numPlayers=takeDetails.getIntExtra("numPlayers",2);
         numRounds=takeDetails.getIntExtra("numRounds",1);
         timeRounds=takeDetails.getIntExtra("timeRounds",30);
-        String name=takeDetails.getStringExtra("name");
+        String name=DBAuth.getUserName();
         GameRoom gameRoom=new GameRoom(numPlayers,numRounds,timeRounds);
         gameRoom.setPlayerNum(numPlayers);
         gameRoom.setRoundNum(numRounds);
@@ -66,19 +87,20 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         dbGameRoom = new DBGameRoom(this);
 
         dbGameRoom.addGameRoom(gameRoom,uidRef);
-        //put the game code
-        TextView t=findViewById(R.id.GameRoomCodeUID);
-        t.setText(uidRef);
-
-
-
     }
-
+    public void player()
+    {
+        // room code
+        uidRef=takeDetails.getStringExtra("gameRoomCode");
+        listenForGameUsers(uidRef);
+    }
     @Override
     public void onGameRoomComplete(boolean s) {
         Toast.makeText(this,"GameRoom " + s,Toast.LENGTH_LONG).show();
+        listenForGameUsers(uidRef);
+    }
 
-
+    private void listenForGameUsers(String uidRef) {
         //add the player name to the list view
         db.collection("GameRooms").document(uidRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -94,7 +116,6 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                 }
             }
         });
-
     }
 
     public void copyCode(View view) {
@@ -105,6 +126,32 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("game room code", uidRef);
                 clipboard.setPrimaryClip(clip);
+            }
+        });
+    }
+
+    public void leaveRoom(View view) {
+        //delete the user from the list and close the app
+        db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        GameRoom gameRoom = task.getResult().toObject(GameRoom.class);
+
+                        //LOCALLY!!
+                        if(gameRoom.deleteUser(DBAuth.getUserUID())) {
+                            // set in the firebase
+                            db.collection("GameRooms").document(uidRef).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                        finish();
+                                }
+                            });
+                        }
+                    }
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class LogInPage extends AppCompatActivity implements DBAuth.AuthComplete,
     }
 
     public void LogIn(View view) {
+        //get the information a
         TextView emailTv=findViewById(R.id.emailLogIn);
         String email=emailTv.getText().toString();
         TextView passwordTv=findViewById(R.id.passwordLogIn);
@@ -35,7 +37,9 @@ public class LogInPage extends AppCompatActivity implements DBAuth.AuthComplete,
 
     @Override
     public void onComplete(boolean s) {
-
+        Intent intent=new Intent(LogInPage.this,GameLobby.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

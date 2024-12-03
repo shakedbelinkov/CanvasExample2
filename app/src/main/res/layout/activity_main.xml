@@ -10,7 +10,7 @@
 
 
 
-    <com.example.canvasexample2.MyCanvasView
+    <com.example.Shcrible.MyCanvasView
         android:id="@+id/canvas01"
         android:layout_width="352dp"
         android:layout_height="471dp"

@@ -51,10 +51,11 @@
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="162dp"
+        android:layout_width="172dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
+        android:backgroundTint="#DA675F"
         android:onClick="LogIn"
         android:text="Log In"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,4 +1,4 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import android.graphics.Color;
 import android.os.Bundle;

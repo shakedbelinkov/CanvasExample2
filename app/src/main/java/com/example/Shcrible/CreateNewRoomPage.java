@@ -1,13 +1,11 @@
-package com.example.canvasexample2;
+package com.example.Shcrible;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,13 +94,13 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
     public void startNextActivity(View view) {
         //when the user finish to choose we move to the next activity=> WaitingRoom
         Intent takeDetails = getIntent();
-        String name = takeDetails.getStringExtra("name");
         intent=new Intent(CreateNewRoomPage.this,WaitingRoom.class);
         intent.putExtra("numPlayers",numPlayers);
         intent.putExtra("numRounds",numRounds);
         intent.putExtra("timeRounds",time);
-        intent.putExtra("name",name);
+        intent.putExtra("isHost",1);
         startActivity(intent);
+        finish();
 
     }
 }
