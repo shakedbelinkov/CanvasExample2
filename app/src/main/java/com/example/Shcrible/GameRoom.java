@@ -89,7 +89,7 @@ public class GameRoom {
         //add the user to the lists
         int index=999;
         for (int i=0;i<counterOfPlayers;i++)
-            if (uIDs.get(i)==uId)
+            if (uIDs.get(i).equals(uId))
                 index=i;
         if (index==999)
             return false;

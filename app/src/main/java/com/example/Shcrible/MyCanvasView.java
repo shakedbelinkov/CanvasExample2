@@ -7,10 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import java.util.ArrayList;
 
 public class MyCanvasView extends View {
     private Paint mPaint;
@@ -107,9 +110,18 @@ public class MyCanvasView extends View {
         }
         return true;
     }
+
+    /// testing only
+
+    ArrayList<Integer> arr = new ArrayList<>();
+    int counter=0;
+
+    ///
     private void touchStart(float x, float y) {
         //start the path on x,y
         mPath.moveTo(x, y);
+        arr.add(counter);
+        counter++;
         mX = x;
         mY = y;
     }
@@ -121,11 +133,21 @@ public class MyCanvasView extends View {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
             mX = x;
             mY = y;
+
+            arr.add(counter++);
+            Log.d("updatePath", "touchMove"+mX+" "+mY);
+
+
             mExtraCanvas.drawPath(mPath, mPaint);
         }
     }
     private void touchUp() {
+        arr.add(-2);
+
+        Log.d("ARRAY_PRINT", "touchUp: arr: " + arr.toString());
+
         mPath.reset();
+        arr.clear();
     }
     public void changeBrushColor(int color)
             //change the color of the brush to "color"
