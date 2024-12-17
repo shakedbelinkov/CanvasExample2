@@ -111,20 +111,25 @@ public class MyCanvasView extends View {
         return true;
     }
 
-    /// testing only
 
-    ArrayList<Integer> arr = new ArrayList<>();
-    int counter=0;
+    public void drawFromDB(Draw draw)
+    {
 
-    ///
+        changeBrushColor(draw.getColor());
+        touchStart(draw.getInitialX(),draw.getInitialY());
+        //
+        touchMove(draw.getInitialX(),draw.getInitialY(),draw.getEndX(),draw.getEndY());
+
+    }
     private void touchStart(float x, float y) {
         //start the path on x,y
         mPath.moveTo(x, y);
-        arr.add(counter);
-        counter++;
         mX = x;
         mY = y;
     }
+
+
+
     private void touchMove(float x, float y) {
         //move the path to x,y
         float dx = Math.abs(x - mX);
@@ -134,20 +139,13 @@ public class MyCanvasView extends View {
             mX = x;
             mY = y;
 
-            arr.add(counter++);
-            Log.d("updatePath", "touchMove"+mX+" "+mY);
-
 
             mExtraCanvas.drawPath(mPath, mPaint);
         }
     }
     private void touchUp() {
-        arr.add(-2);
-
-        Log.d("ARRAY_PRINT", "touchUp: arr: " + arr.toString());
 
         mPath.reset();
-        arr.clear();
     }
     public void changeBrushColor(int color)
             //change the color of the brush to "color"

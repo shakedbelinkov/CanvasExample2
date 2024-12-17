@@ -6,6 +6,7 @@ public class GameRoom {
     private int playerNum;//max players on this game room
     private int roundNum;//number of rounds
     private int roundTime;//time for a round
+    private int counter=0;
 
 
 
@@ -98,6 +99,15 @@ public class GameRoom {
         this.counterOfPlayers--;
         return true;
     }
-
+    public String whoseTurn()
+    {
+        //return whose turn is it
+        String name=this.names.get(counter);
+        if (this.counter-1==this.playerNum)
+            counter=0;
+        else
+            counter++;
+        return name;
+    }
 
 }
