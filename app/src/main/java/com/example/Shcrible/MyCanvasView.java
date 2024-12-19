@@ -7,10 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import java.util.ArrayList;
 
 public class MyCanvasView extends View {
     private Paint mPaint;
@@ -107,12 +110,26 @@ public class MyCanvasView extends View {
         }
         return true;
     }
+
+
+    public void drawFromDB(Draw draw)
+    {
+
+        changeBrushColor(draw.getColor());
+        touchStart(draw.getInitialX(),draw.getInitialY());
+        //
+        touchMove(draw.getInitialX(),draw.getInitialY(),draw.getEndX(),draw.getEndY());
+
+    }
     private void touchStart(float x, float y) {
         //start the path on x,y
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
     }
+
+
+
     private void touchMove(float x, float y) {
         //move the path to x,y
         float dx = Math.abs(x - mX);
@@ -121,10 +138,13 @@ public class MyCanvasView extends View {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
             mX = x;
             mY = y;
+
+
             mExtraCanvas.drawPath(mPath, mPaint);
         }
     }
     private void touchUp() {
+
         mPath.reset();
     }
     public void changeBrushColor(int color)

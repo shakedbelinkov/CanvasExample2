@@ -19,181 +19,191 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/Red"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#FF0000"
-        android:onClick="changeBrushColor"
-        android:tag="#FF0000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01" />
-
-    <Button
-        android:id="@+id/Blue"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#0B2EF1"
-        android:onClick="changeBrushColor"
-        android:tag="#0B2EF1"
-        app:layout_constraintStart_toEndOf="@+id/Red"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01" />
-
-    <Button
-        android:id="@+id/Yellow"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#FFE801"
-        android:onClick="changeBrushColor"
-        android:tag="#FFE801"
-        app:layout_constraintStart_toEndOf="@+id/Blue"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01" />
-
-    <Button
-        android:id="@+id/Green"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#4CAF50"
-        android:onClick="changeBrushColor"
-        android:tag="#4CAF50"
-        app:layout_constraintStart_toEndOf="@+id/Yellow"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01" />
-
-    <Button
-        android:id="@+id/Black"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#000000"
-        android:onClick="changeBrushColor"
-        android:tag="#000000"
-        app:layout_constraintStart_toEndOf="@+id/Green"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01" />
-
-    <Button
-        android:id="@+id/White"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="38dp"
-        android:backgroundTint="#F4EDED"
-        android:onClick="changeBrushColor"
-        android:tag="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Black" />
-
-    <Button
-        android:id="@+id/Brown"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#FC84460F"
-        android:onClick="changeBrushColor"
-        android:tag="#FC84460F"
-        app:layout_constraintEnd_toStartOf="@+id/White"
-        app:layout_constraintTop_toBottomOf="@+id/Green" />
-
-    <Button
-        android:id="@+id/Purple"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#673AB7"
-        android:onClick="changeBrushColor"
-        android:tag="#673AB7"
-        app:layout_constraintEnd_toStartOf="@+id/Brown"
-        app:layout_constraintTop_toBottomOf="@+id/Yellow" />
-
-    <Button
-        android:id="@+id/Pink"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#FF8AD1"
-        android:onClick="changeBrushColor"
-        android:tag="#FF8AD1"
-        app:layout_constraintEnd_toStartOf="@+id/Purple"
-        app:layout_constraintTop_toBottomOf="@+id/Blue" />
-
-    <Button
-        android:id="@+id/Orange"
-        android:layout_width="56dp"
-        android:layout_height="59dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#FF6122"
-        android:onClick="changeBrushColor"
-        android:tag="#FF6122"
-        app:layout_constraintEnd_toStartOf="@+id/Pink"
-        app:layout_constraintTop_toBottomOf="@+id/Red" />
-
-    <ImageView
-        android:id="@+id/eraser"
-        android:layout_width="79dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="1dp"
-        android:onClick="eraser"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Pink"
-        app:srcCompat="@drawable/eraser" />
-
-    <Button
-        android:id="@+id/size1"
-        android:layout_width="23dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="#000000"
-        android:onClick="changeBrushSize"
-        android:tag="12"
-        app:layout_constraintStart_toEndOf="@+id/eraser"
-        app:layout_constraintTop_toBottomOf="@+id/Pink" />
-
-    <Button
-        android:id="@+id/size2"
-        android:layout_width="28dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#000000"
-        android:onClick="changeBrushSize"
-        android:tag="30"
-        app:layout_constraintStart_toEndOf="@+id/size1"
-        app:layout_constraintTop_toBottomOf="@+id/Purple" />
-
-    <Button
-        android:id="@+id/size3"
-        android:layout_width="33dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="20dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/innerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#000000"
-        android:onClick="changeBrushSize"
-        android:tag="50"
-        app:layout_constraintStart_toEndOf="@+id/size2"
-        app:layout_constraintTop_toBottomOf="@+id/Brown" />
-
-    <ImageView
-        android:id="@+id/deleteButtun"
-        android:layout_width="79dp"
-        android:layout_height="76dp"
-        android:layout_marginEnd="38dp"
-        android:onClick="delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/White"
-        app:srcCompat="@drawable/trash3" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/canvas01">
+
+        <Button
+            android:id="@+id/Red"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#FF0000"
+            android:onClick="changeBrushColor"
+            android:tag="#FF0000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/canvas01" />
+
+        <Button
+            android:id="@+id/Blue"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#0B2EF1"
+            android:onClick="changeBrushColor"
+            android:tag="#0B2EF1"
+            app:layout_constraintStart_toEndOf="@+id/Red"
+            app:layout_constraintTop_toBottomOf="@+id/canvas01" />
+
+        <Button
+            android:id="@+id/Yellow"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#FFE801"
+            android:onClick="changeBrushColor"
+            android:tag="#FFE801"
+            app:layout_constraintStart_toEndOf="@+id/Blue"
+            app:layout_constraintTop_toBottomOf="@+id/canvas01" />
+
+        <Button
+            android:id="@+id/Green"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#4CAF50"
+            android:onClick="changeBrushColor"
+            android:tag="#4CAF50"
+            app:layout_constraintStart_toEndOf="@+id/Yellow"
+            app:layout_constraintTop_toBottomOf="@+id/canvas01" />
+
+        <Button
+            android:id="@+id/Black"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#000000"
+            android:onClick="changeBrushColor"
+            android:tag="#000000"
+            app:layout_constraintStart_toEndOf="@+id/Green"
+            app:layout_constraintTop_toBottomOf="@+id/canvas01" />
+
+        <Button
+            android:id="@+id/White"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="38dp"
+            android:backgroundTint="#F4EDED"
+            android:onClick="changeBrushColor"
+            android:tag="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Black" />
+
+        <Button
+            android:id="@+id/Brown"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="#FC84460F"
+            android:onClick="changeBrushColor"
+            android:tag="#FC84460F"
+            app:layout_constraintEnd_toStartOf="@+id/White"
+            app:layout_constraintTop_toBottomOf="@+id/Green" />
+
+        <Button
+            android:id="@+id/Purple"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="#673AB7"
+            android:onClick="changeBrushColor"
+            android:tag="#673AB7"
+            app:layout_constraintEnd_toStartOf="@+id/Brown"
+            app:layout_constraintTop_toBottomOf="@+id/Yellow" />
+
+        <Button
+            android:id="@+id/Pink"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="#FF8AD1"
+            android:onClick="changeBrushColor"
+            android:tag="#FF8AD1"
+            app:layout_constraintEnd_toStartOf="@+id/Purple"
+            app:layout_constraintTop_toBottomOf="@+id/Blue" />
+
+        <Button
+            android:id="@+id/Orange"
+            android:layout_width="56dp"
+            android:layout_height="59dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="#FF6122"
+            android:onClick="changeBrushColor"
+            android:tag="#FF6122"
+            app:layout_constraintEnd_toStartOf="@+id/Pink"
+            app:layout_constraintTop_toBottomOf="@+id/Red" />
+
+        <ImageView
+            android:id="@+id/eraser"
+            android:layout_width="79dp"
+            android:layout_height="76dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="1dp"
+            android:onClick="eraser"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Pink"
+            app:srcCompat="@drawable/eraser" />
+
+        <Button
+            android:id="@+id/size1"
+            android:layout_width="23dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="28dp"
+            android:backgroundTint="#000000"
+            android:onClick="changeBrushSize"
+            android:tag="12"
+            app:layout_constraintStart_toEndOf="@+id/eraser"
+            app:layout_constraintTop_toBottomOf="@+id/Pink" />
+
+        <Button
+            android:id="@+id/size2"
+            android:layout_width="28dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#000000"
+            android:onClick="changeBrushSize"
+            android:tag="30"
+            app:layout_constraintStart_toEndOf="@+id/size1"
+            app:layout_constraintTop_toBottomOf="@+id/Purple" />
+
+        <Button
+            android:id="@+id/size3"
+            android:layout_width="33dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#000000"
+            android:onClick="changeBrushSize"
+            android:tag="50"
+            app:layout_constraintStart_toEndOf="@+id/size2"
+            app:layout_constraintTop_toBottomOf="@+id/Brown" />
+
+        <ImageView
+            android:id="@+id/deleteButtun"
+            android:layout_width="79dp"
+            android:layout_height="76dp"
+            android:layout_marginEnd="38dp"
+            android:onClick="delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/White"
+            app:srcCompat="@drawable/trash3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

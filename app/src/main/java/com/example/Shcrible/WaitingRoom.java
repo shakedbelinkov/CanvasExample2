@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,6 +88,8 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         dbGameRoom = new DBGameRoom(this);
 
         dbGameRoom.addGameRoom(gameRoom,uidRef);
+        Button startButton=findViewById(R.id.startGameButton);
+        startButton.setVisibility(View.VISIBLE);
     }
     public void player()
     {
@@ -102,7 +105,8 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
 
     private void listenForGameUsers(String uidRef) {
         //add the player name to the list view
-        db.collection("GameRooms").document(uidRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        //remove the listener- else it wiil crash once leaved- therefore adding "this" to the method call
+        db.collection("GameRooms").document(uidRef).addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
@@ -154,5 +158,11 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                 }
             }
         });
+    }
+
+    public void StartGame(View view) {
+        Intent intent=new Intent(WaitingRoom.this, MainActivity.class);
+        intent.putExtra("gameRoomCode",uidRef);
+        startActivity(intent);
     }
 }
