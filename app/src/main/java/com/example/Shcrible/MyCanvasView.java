@@ -15,15 +15,20 @@ import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 
-public class MyCanvasView extends View {
+public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     private Paint mPaint;
     private Path mPath;
     private int mDrawColor;
     private int mBackgroundColor;
     private Canvas mExtraCanvas;
     private Bitmap mExtraBitmap;
+    private String uidRef;
     private float mX, mY;
-    private static final float TOUCH_TOLERANCE = 4;
+    private int updateCounter=0;
+    private int lastUpdate=0;
+    private static final float TOUCH_TOLERANCE = 4;//the pixel gap from which i will start drawing new path
+    private ArrayList<Draw> draws=new ArrayList<>();// arr of draws for the db
+    private DBDraw db=new DBDraw(this);
     MyCanvasView(Context context, Bitmap mExtraBitmap) {
         this(context, null, mExtraBitmap);
     }
@@ -112,13 +117,16 @@ public class MyCanvasView extends View {
     }
 
 
-    public void drawFromDB(Draw draw)
+    public void drawFromDB(ArrayList<Draw> draws)
     {
+        for (int i=0;i<draws.size()-1;i++)
+        {
+           // if (draws.get(i).getType().equals("MOVETO"))
+            touchMove(draws.get(i).getInitialX(),draws.get(i).getInitialY());
+           // if (draws.get(i).getType().equals("QUADTO"))
+                touchMove(draws.get(i).getEndX(),draws.get(i).getEndY());
 
-        changeBrushColor(draw.getColor());
-        touchStart(draw.getInitialX(),draw.getInitialY());
-        //
-        touchMove(draw.getInitialX(),draw.getInitialY(),draw.getEndX(),draw.getEndY());
+        }
 
     }
     private void touchStart(float x, float y) {
@@ -126,6 +134,9 @@ public class MyCanvasView extends View {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
+        Draw d=new Draw(x,y,0,0,Consts.START_DRAW,mDrawColor);
+        updateCounter++;
+        draws.add(d);
     }
 
 
@@ -136,15 +147,20 @@ public class MyCanvasView extends View {
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
+            Draw d=new Draw(mX,mY,(x + mX)/2,(y + mY)/2,Consts.MOVE_DRAW,mDrawColor);
+            updateCounter++;
             mX = x;
             mY = y;
-
-
             mExtraCanvas.drawPath(mPath, mPaint);
+            draws.add(d);
         }
     }
     private void touchUp() {
-
+        Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor);
+        updateCounter++;
+        draws.add(d);
+        db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
+        lastUpdate=updateCounter;
         mPath.reset();
     }
     public void changeBrushColor(int color)
@@ -168,5 +184,14 @@ public class MyCanvasView extends View {
             //change the size of the brush
     {
         mPaint.setStrokeWidth(size);
+    }
+
+    @Override
+    public void onDrawComplete(boolean s) {
+
+    }
+
+    public void setUidRef(String uidRef) {
+        this.uidRef = uidRef;
     }
 }

@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#66D4F6"
+    android:onClick="leaveGame"
     tools:context=".MainActivity">
-
 
 
     <com.example.Shcrible.MyCanvasView
         android:id="@+id/canvas01"
-        android:layout_width="352dp"
-        android:layout_height="471dp"
+        android:layout_width="351dp"
+        android:layout_height="408dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="28dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -205,5 +205,23 @@
             app:layout_constraintTop_toBottomOf="@+id/White"
             app:srcCompat="@drawable/trash3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/leaveGameButton"
+        android:layout_width="138dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="#DA675F"
+        android:onClick="leaveGame"
+        android:text="leave game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/innerLayout"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

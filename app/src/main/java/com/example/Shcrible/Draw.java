@@ -5,10 +5,10 @@ public class Draw {
     private float initialY;
     private float endX;
     private float endY;
-    private String type;
+    private int type;
     private int color;
     private int brushSize;
-    public Draw(float initialX,float initialY,float endX,float endY,String type,int color)
+    public Draw(float initialX,float initialY,float endX,float endY,int type,int color)
     {
         this.initialX=initialX;
         this.initialY=initialY;
@@ -50,11 +50,11 @@ public class Draw {
         this.endY = endY;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

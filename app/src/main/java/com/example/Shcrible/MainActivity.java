@@ -22,8 +22,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete{
 
@@ -102,17 +105,46 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void listenForDraws(String uidRef)
     {
-        db.collection("Draw").document(uidRef).addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+        db.collection("GameRoom").document(uidRef).collection("Draw").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                ArrayList<Draw> drawList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc != null) {
+                        drawList.add(doc.toObject(Draw.class));
+                    }
+                }
+                    myCanvasView.drawFromDB(drawList);
 
-                if(value.exists())
-                {
-                    Draw draw=value.toObject(Draw.class);
-                    draws.add(draw);
-                    myCanvasView.drawFromDB(draw);
 
 
+            }
+        });
+
+
+
+    }
+
+    public void leaveGame(View view) {
+        db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().exists()) {
+                        GameRoom gameRoom = task.getResult().toObject(GameRoom.class);
+
+                        //LOCALLY!!
+                        if(gameRoom.deleteUser(DBAuth.getUserUID())) {
+                            // set in the firebase
+                            db.collection("GameRooms").document(uidRef).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                        finish();
+                                }
+                            });
+                        }
+                    }
                 }
             }
         });

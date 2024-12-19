@@ -6,6 +6,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class DBDraw {
     public interface AddDrawComplete
     {
@@ -19,9 +21,9 @@ public class DBDraw {
     }
 
 
-    public void addDraw(Draw draw,String uidRef)
+    public void addDraw(ArrayList<Draw> draws, String uidRef)
     {
-        db.collection("Draw").document(uidRef).set(draw).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("Draw").document(uidRef).set(draws).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 addDrawComplete.onDrawComplete(task.isSuccessful());

@@ -164,5 +164,6 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         Intent intent=new Intent(WaitingRoom.this, MainActivity.class);
         intent.putExtra("gameRoomCode",uidRef);
         startActivity(intent);
+        finish();
     }
 }
