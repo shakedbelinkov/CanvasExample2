@@ -105,18 +105,27 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
 
     private void listenForGameUsers(String uidRef) {
         //add the player name to the list view
-        //remove the listener- else it wiil crash once leaved- therefore adding "this" to the method call
+        //remove the listener- else it will crash once leaved- therefore adding "this" to the method call
         db.collection("GameRooms").document(uidRef).addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
                 if(value.exists())
                 {
+
                     GameRoom gm=value.toObject(GameRoom.class);
                     names=gm.getNames();
                     lv=findViewById(R.id.playersList);
                     arrayAdapter=new ArrayAdapter<String>(WaitingRoom.this, android.R.layout.simple_list_item_1,names);
                     lv.setAdapter(arrayAdapter);
+                    if (gm.getIsStart())
+                    {
+                        Intent intent=new Intent(WaitingRoom.this, MainActivity.class);
+                        intent.putExtra("gameRoomCode",uidRef);
+                        intent.putExtra("isHost",2);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });
@@ -161,9 +170,19 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     }
 
     public void StartGame(View view) {
-        Intent intent=new Intent(WaitingRoom.this, MainActivity.class);
-        intent.putExtra("gameRoomCode",uidRef);
-        startActivity(intent);
-        finish();
+        Intent intent = new Intent(WaitingRoom.this, MainActivity.class);
+        intent.putExtra("gameRoomCode", uidRef);
+        intent.putExtra("isHost", 1);
+
+        db.collection("GameRooms").document(uidRef).update("isStart", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
     }
+
 }

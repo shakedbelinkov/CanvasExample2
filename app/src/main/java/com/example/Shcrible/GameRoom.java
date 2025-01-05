@@ -1,5 +1,8 @@
 package com.example.Shcrible;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class GameRoom {
@@ -7,6 +10,7 @@ public class GameRoom {
     private int roundNum;//number of rounds
     private int roundTime;//time for a round
     private int counter=0;
+    private boolean isStart=false;
 
 
 
@@ -110,4 +114,12 @@ public class GameRoom {
         return name;
     }
 
+    public boolean getIsStart() {
+        return isStart;
+    }
+
+    public void setIsStart(boolean start) {
+        //Log.d("isStart", "setStart: "+start);
+        isStart = start;
+    }
 }
