@@ -3,6 +3,7 @@ package com.example.Shcrible;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private MyCanvasView myCanvasView;
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DBDraw dbDraw=new DBDraw(this);
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
@@ -70,10 +72,25 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void startTurn()
     {
         String name=gameroom.whoseTurn();
-        if (!(DBAuth.getUserUID().equals(name)))
+        if ((DBAuth.getUserUID().equals(name)))
+        {
+            new CountDownTimer(gameroom.getRoundTime(), 5000) {
+
+                public void onTick(long millisUntilFinished) {
+                    dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
+                }
+
+                public void onFinish() {
+                    dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
+                }
+            }.start();
+
+        }
+        else
         {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
+            listenForDraws(uidRef);
         }
     }
 
@@ -116,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
                     myCanvasView.drawFromDB(drawList);
 
-
-
             }
         });
 
@@ -126,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void leaveGame(View view) {
+        //leave the game
         db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

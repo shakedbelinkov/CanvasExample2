@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public class DBDraw {
 
     public void addDraw(ArrayList<Draw> draws, String uidRef)
     {
-        db.collection("Draw").document(uidRef).set(draws).addOnCompleteListener(new OnCompleteListener<Void>() {
+        db.collection("GameRoom").document(uidRef).collection("Draw").add(draws).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<DocumentReference> task) {
                 addDrawComplete.onDrawComplete(task.isSuccessful());
             }
         });

@@ -121,11 +121,10 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     {
         for (int i=0;i<draws.size()-1;i++)
         {
-           // if (draws.get(i).getType().equals("MOVETO"))
-            touchMove(draws.get(i).getInitialX(),draws.get(i).getInitialY());
-           // if (draws.get(i).getType().equals("QUADTO"))
+           if (draws.get(i).getType()==Consts.MOVE_DRAW)
+            touchStart(draws.get(i).getInitialX(),draws.get(i).getInitialY());
+           if (draws.get(i).getType()==Consts.END_DRAW)
                 touchMove(draws.get(i).getEndX(),draws.get(i).getEndY());
-
         }
 
     }
@@ -159,7 +158,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor);
         updateCounter++;
         draws.add(d);
-        db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
+        //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
         lastUpdate=updateCounter;
         mPath.reset();
     }
@@ -190,8 +189,8 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     public void onDrawComplete(boolean s) {
 
     }
-
-    public void setUidRef(String uidRef) {
-        this.uidRef = uidRef;
+    public ArrayList<Draw>getArrayList()
+    {
+        return (ArrayList<Draw>) draws.subList(lastUpdate,updateCounter);
     }
 }
