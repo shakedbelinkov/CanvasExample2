@@ -103,16 +103,6 @@ public class GameRoom {
         this.counterOfPlayers--;
         return true;
     }
-    public String whoseTurn()
-    {
-        //return whose turn is it
-        String name=this.names.get(counter);
-        if (this.counter-1==this.playerNum)
-            counter=0;
-        else
-            counter++;
-        return name;
-    }
 
     public boolean getIsStart() {
         return isStart;

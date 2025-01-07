@@ -29,6 +29,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     private static final float TOUCH_TOLERANCE = 4;//the pixel gap from which i will start drawing new path
     private ArrayList<Draw> draws=new ArrayList<>();// arr of draws for the db
     private DBDraw db=new DBDraw(this);
+    private int brushSize=12;
     MyCanvasView(Context context, Bitmap mExtraBitmap) {
         this(context, null, mExtraBitmap);
     }
@@ -133,7 +134,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
-        Draw d=new Draw(x,y,0,0,Consts.START_DRAW,mDrawColor);
+        Draw d=new Draw(x,y,0,0,Consts.START_DRAW,mDrawColor,brushSize);
         updateCounter++;
         draws.add(d);
     }
@@ -146,7 +147,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
-            Draw d=new Draw(mX,mY,(x + mX)/2,(y + mY)/2,Consts.MOVE_DRAW,mDrawColor);
+            Draw d=new Draw(mX,mY,(x + mX)/2,(y + mY)/2,Consts.MOVE_DRAW,mDrawColor,brushSize);
             updateCounter++;
             mX = x;
             mY = y;
@@ -155,7 +156,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         }
     }
     private void touchUp() {
-        Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor);
+        Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor,brushSize);
         updateCounter++;
         draws.add(d);
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
@@ -182,6 +183,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     public void changeBrushSize(int size)
             //change the size of the brush
     {
+        brushSize=size;
         mPaint.setStrokeWidth(size);
     }
 
@@ -191,6 +193,6 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     public ArrayList<Draw>getArrayList()
     {
-        return (ArrayList<Draw>) draws.subList(lastUpdate,updateCounter);
+        return new ArrayList<Draw>(draws.subList(lastUpdate,updateCounter)) ;
     }
 }

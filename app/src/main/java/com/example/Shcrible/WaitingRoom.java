@@ -37,6 +37,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<String> names;
+    private int isHost;
     ListView lv;
     ArrayAdapter<String> arrayAdapter;
     @Override
@@ -61,7 +62,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         //          if i am not the host
         //              get the code from the intent
         takeDetails = getIntent();
-        int isHost=takeDetails.getIntExtra("isHost",1);
+         isHost=takeDetails.getIntExtra("isHost",1);
         if (isHost==1)
             host();
         else
@@ -119,12 +120,16 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                     arrayAdapter=new ArrayAdapter<String>(WaitingRoom.this, android.R.layout.simple_list_item_1,names);
                     lv.setAdapter(arrayAdapter);
                     if (gm.getIsStart())
+                    //if the attribute "isStart" is true- the game started, move to MainActivity
                     {
-                        Intent intent=new Intent(WaitingRoom.this, MainActivity.class);
-                        intent.putExtra("gameRoomCode",uidRef);
-                        intent.putExtra("isHost",2);
-                        startActivity(intent);
-                        finish();
+                        // if I am not the host
+                        if (isHost!=1) {
+                            Intent intent = new Intent(WaitingRoom.this, MainActivity.class);
+                            intent.putExtra("gameRoomCode", uidRef);
+                            intent.putExtra("isHost", 2);//2-player
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 }
             }
@@ -170,9 +175,12 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     }
 
     public void StartGame(View view) {
+        //when the host click on the start button
+        //change the attribute "isStart"-true
+        //move to the Activity-"MainActivity"
         Intent intent = new Intent(WaitingRoom.this, MainActivity.class);
         intent.putExtra("gameRoomCode", uidRef);
-        intent.putExtra("isHost", 1);
+        intent.putExtra("isHost", 1);//1-host
 
         db.collection("GameRooms").document(uidRef).update("isStart", true).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete{
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
+    private int counter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         myCanvasView = findViewById(R.id.canvas01);
         Intent takeDetails = getIntent();
         uidRef=takeDetails.getStringExtra("gameRoomCode");
+        initUI();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.startButton), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -71,10 +74,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void startTurn()
     {
-        String name=gameroom.whoseTurn();
+        String name=whoseTurn();
         if ((DBAuth.getUserUID().equals(name)))
         {
-            new CountDownTimer(gameroom.getRoundTime(), 5000) {
+            new CountDownTimer(gameroom.getRoundTime()*1000, 5000) {
 
                 public void onTick(long millisUntilFinished) {
                     dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
@@ -82,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
                 public void onFinish() {
                     dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
+                    if (counter==gameroom.getCounterOfPlayers()-1)
+                        counter=0;
+                    else
+                        counter++;
                 }
             }.start();
 
@@ -97,13 +104,14 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
 
     public void changeBrushColor(View view) {
-
+        //change the brush color
         String color = view.getTag().toString();
         int brushColor = Color.parseColor(color);
         myCanvasView.changeBrushColor(brushColor);
     }
 
     public void eraser(View view) {
+        //change the brush color to the background color- eraser
         myCanvasView.eraser();
     }
 
@@ -112,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void changeBrushSize(View view) {
+        //change the brush size
         int size = Integer.valueOf((String) view.getTag());
         myCanvasView.changeBrushSize(size);
     }
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         Toast.makeText(this,"Draw " + s,Toast.LENGTH_LONG).show();
     }
     public void listenForDraws(String uidRef)
+            //listening for change-every time
     {
         db.collection("GameRoom").document(uidRef).collection("Draw").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -132,13 +142,19 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     }
                 }
                     myCanvasView.drawFromDB(drawList);
-
             }
         });
-
-
-
     }
+    /*public ArrayList<Draw> HashMapToDraw(HashMap<Integer, HashMap<String,Object>> map)
+    {
+        ArrayList<Draw> drawArrayList=new ArrayList<>()
+        HashMap<String,Object> map2=map.get(0);
+        for (int i=0;i< map2.size()-1;i++)
+        {
+        //    drawArrayList.add(map2.get(Draw.class));
+        }
+        return drawArrayList;
+    }*/
 
     public void leaveGame(View view) {
         //leave the game
@@ -164,5 +180,9 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
             }
         });
+    }
+    public String whoseTurn()
+    {
+        return uIDs.get(counter);
     }
 }
