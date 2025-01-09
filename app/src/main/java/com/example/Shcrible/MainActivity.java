@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 for (DocumentSnapshot doc:value.getDocuments()) {
                     // each doc is TreeMap of Hashmap
                     // each hashmap represent a draw object
-                    arr = TreeMapToDraw(doc.getData())
+                    arr = TreeMapToDraw(doc.getData());
 
                 }
 
