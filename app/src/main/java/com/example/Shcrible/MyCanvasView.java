@@ -122,6 +122,8 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     {
         for (int i=0;i<draws.size()-1;i++)
         {
+            changeBrushColor(draws.get(i).getColor());
+            changeBrushSize(draws.get(i).getBrushSize());
            if (draws.get(i).getType()==Consts.MOVE_DRAW)
             touchStart(draws.get(i).getInitialX(),draws.get(i).getInitialY());
            if (draws.get(i).getType()==Consts.END_DRAW)

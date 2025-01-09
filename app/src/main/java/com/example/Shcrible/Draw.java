@@ -2,6 +2,7 @@ package com.example.Shcrible;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Draw implements Serializable {
     private float initialX;
@@ -94,5 +95,13 @@ public class Draw implements Serializable {
         map.put("color",color);
         map.put("brushSize",brushSize);
         return map;
+    }
+
+
+    public void hashmapToDraw(Map<String,Object> map)
+    {
+        // map to draw attributes
+        this.initialX = (float)map.get("initialX");
+
     }
 }

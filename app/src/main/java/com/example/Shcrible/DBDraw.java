@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 public class DBDraw {
@@ -28,9 +29,7 @@ public class DBDraw {
     private  TreeMap<String,HashMap<String,Object>> arrayToMap(ArrayList<Draw> draws)
     {
 
-
         TreeMap<String,HashMap<String,Object>> drawsAsMap = new TreeMap<>();
-
         for (int i = 0; i < draws.size(); i++) {
             // pass through arraylist
             // for each draw in the arraylist create a dictionary - hashmap
@@ -41,10 +40,8 @@ public class DBDraw {
     }
 
     public void addDraw(ArrayList<Draw> draws, String uidRef)
+            //add draw to collection on firebase
     {
-
-
-
         db.collection("GameRooms").document(uidRef).collection("Draw").add(arrayToMap(draws)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {

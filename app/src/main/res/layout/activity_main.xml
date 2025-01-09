@@ -12,10 +12,10 @@
 
     <com.example.Shcrible.MyCanvasView
         android:id="@+id/canvas01"
-        android:layout_width="351dp"
-        android:layout_height="408dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
+        android:layout_width="385dp"
+        android:layout_height="415dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,7 +69,7 @@
             android:layout_width="56dp"
             android:layout_height="59dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="52dp"
             android:backgroundTint="#4CAF50"
             android:onClick="changeBrushColor"
             android:tag="#4CAF50"
@@ -208,18 +208,18 @@
 
     <Button
         android:id="@+id/leaveGameButton"
-        android:layout_width="138dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="162dp"
+        android:layout_width="130dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="161dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="159dp"
+        android:layout_marginEnd="160dp"
         android:layout_marginBottom="18dp"
         android:backgroundTint="#DA675F"
         android:onClick="leaveGame"
         android:text="leave game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/innerLayout"
         app:layout_constraintVertical_bias="1.0" />

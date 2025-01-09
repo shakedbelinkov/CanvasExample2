@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete{
 
@@ -73,10 +75,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
        });
     }
     public void startTurn()
+            //start new turn
     {
         String name=whoseTurn();
         if ((DBAuth.getUserUID().equals(name)))
+        //check whose turn is it
         {
+            //if it your turn start countDownTimer, every five seconds it update
             new CountDownTimer(gameroom.getRoundTime()*1000, 5000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -135,26 +140,50 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         db.collection("GameRoom").document(uidRef).collection("Draw").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                ArrayList<Draw> drawList = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : value) {
-                    if (doc != null) {
-                        drawList.add(doc.toObject(Draw.class));
-                    }
+
+                ArrayList<Draw> arr = new ArrayList<>();
+                for (DocumentSnapshot doc:value.getDocuments()) {
+                    // each doc is TreeMap of Hashmap
+                    // each hashmap represent a draw object
+                    arr = TreeMapToDraw(doc.getData())
+
                 }
-                    myCanvasView.drawFromDB(drawList);
+
+                    myCanvasView.drawFromDB(arr);
             }
         });
     }
-    /*public ArrayList<Draw> HashMapToDraw(HashMap<Integer, HashMap<String,Object>> map)
+
+    // TREEMAP
+    // Each String represent index of the object in the draw array
+    // each value / Object represent an hashmap that is converted to a DRAW object
+    public ArrayList<Draw> TreeMapToDraw(Map<String,Object> map)
     {
-        ArrayList<Draw> drawArrayList=new ArrayList<>()
-        HashMap<String,Object> map2=map.get(0);
-        for (int i=0;i< map2.size()-1;i++)
+
+        ArrayList<Draw> drawArrayList=new ArrayList<>(map.size());
+        for (Map.Entry<String,Object> entry:map.entrySet())
+
         {
-        //    drawArrayList.add(map2.get(Draw.class));
+            // key - map to an index in the array
+            String key = entry.getKey();
+            // each value map to draw object
+            Map<String,Object> value = (Map<String,Object>)entry.getValue();
+
+            Draw d = new Draw();
+            d.hashmapToDraw(value);
+
+            // d should be a Draw object
+
+            // add d to the arraylist
+            drawArrayList.add(Integer.parseInt(key),d);
+
+
         }
+
+
+
         return drawArrayList;
-    }*/
+    }
 
     public void leaveGame(View view) {
         //leave the game
