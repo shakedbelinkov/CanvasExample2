@@ -76,7 +76,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     {
         numPlayers=takeDetails.getIntExtra("numPlayers",2);
         numRounds=takeDetails.getIntExtra("numRounds",1);
-        timeRounds=takeDetails.getIntExtra("timeRounds",30);
+        timeRounds=takeDetails.getIntExtra("timeRounds",20);
         String name=DBAuth.getUserName();
         GameRoom gameRoom=new GameRoom(numPlayers,numRounds,timeRounds);
         gameRoom.setPlayerNum(numPlayers);

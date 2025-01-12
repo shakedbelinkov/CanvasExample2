@@ -65,8 +65,8 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
         {
             return;
         }
-        String answer= parent.getItemAtPosition(pos).toString();
-        String name = view.getTag().toString();
+        String answer= parent.getItemAtPosition(pos).toString();//answer
+        String name = view.getTag().toString();//spinner name
 
         int result = Integer.valueOf(answer);
 

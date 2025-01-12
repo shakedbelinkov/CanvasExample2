@@ -101,7 +101,28 @@ public class Draw implements Serializable {
     public void hashmapToDraw(Map<String,Object> map)
     {
         // map to draw attributes
-        this.initialX = (float)map.get("initialX");
+        Object o = map.get("initialX");
+        this.initialX = (float)((double)map.get("initialX"));
+        this.initialY = (float)((double)map.get("initialY"));
+        this.endX = (float)((double)map.get("endX"));
+        this.endY = (float)((double)map.get("endY"));
+        this.type = (int)((long)map.get("type"));
+        this.color=(int)((long)map.get("color"));
+        this.brushSize=(int)((long)map.get("brushSize"));
 
+    }
+
+
+    @Override
+    public String toString() {
+        return "Draw{" +
+                "initialX=" + initialX +
+                ", initialY=" + initialY +
+                ", endX=" + endX +
+                ", endY=" + endY +
+                ", type=" + type +
+                ", color=" + color +
+                ", brushSize=" + brushSize +
+                '}';
     }
 }

@@ -118,16 +118,21 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
 
 
-    public void drawFromDB(ArrayList<Draw> draws)
+    public void drawFromDB(Draw[] draws)
     {
-        for (int i=0;i<draws.size()-1;i++)
+
+        if(draws==null)
+            return;
+        for (int i=0;i<draws.length;i++)
         {
-            changeBrushColor(draws.get(i).getColor());
-            changeBrushSize(draws.get(i).getBrushSize());
-           if (draws.get(i).getType()==Consts.MOVE_DRAW)
-            touchStart(draws.get(i).getInitialX(),draws.get(i).getInitialY());
-           if (draws.get(i).getType()==Consts.END_DRAW)
-                touchMove(draws.get(i).getEndX(),draws.get(i).getEndY());
+            changeBrushColor(draws[i].getColor());
+            changeBrushSize(draws[i].getBrushSize());
+            if (draws[i].getType()==Consts.START_DRAW)
+                touchStart(draws[i].getInitialX(),draws[i].getInitialY());
+           if (draws[i].getType()==Consts.MOVE_DRAW)
+            touchMove(draws[i].getInitialX(),draws[i].getInitialY());
+           if (draws[i].getType()==Consts.END_DRAW)
+                touchUp();//(draws[i].getEndX(),draws[i].getEndY());
         }
 
     }
