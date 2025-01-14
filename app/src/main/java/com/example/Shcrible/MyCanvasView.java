@@ -127,12 +127,28 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         {
             changeBrushColor(draws[i].getColor());
             changeBrushSize(draws[i].getBrushSize());
+            if (i==0&& draws[i].getType()!=Consts.START_DRAW)//check the first one if it the continue of the last arr
+            {
+                if (draws[i].getType()==Consts.DELETE_ALL)
+                    delete();
+                else
+                    touchStart(draws[i].getInitialX(),draws[i].getInitialY());
+            }
             if (draws[i].getType()==Consts.START_DRAW)
                 touchStart(draws[i].getInitialX(),draws[i].getInitialY());
            if (draws[i].getType()==Consts.MOVE_DRAW)
             touchMove(draws[i].getInitialX(),draws[i].getInitialY());
            if (draws[i].getType()==Consts.END_DRAW)
-                touchUp();//(draws[i].getEndX(),draws[i].getEndY());
+                touchUp();
+            if (draws[i].getType()==Consts.DELETE_ALL)
+                delete();
+           else if (i==draws.length-1)//if the last draw isn't end draw
+           {
+               if (draws[i].getType()==Consts.DELETE_ALL)
+                   delete();
+               else
+                   touchUp();
+           }
         }
 
     }
@@ -186,6 +202,8 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
             //put a layer of color (background color)
     {
         changeBackgroundColor(mBackgroundColor);
+        Draw d=new Draw(0,0,0,0,Consts.DELETE_ALL,mBackgroundColor,brushSize);
+        draws.add(d);
     }
     public void changeBrushSize(int size)
             //change the size of the brush

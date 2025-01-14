@@ -20,10 +20,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
     private int counter=0;
+
+
+
+    ListenerRegistration registration = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         //check whose turn is it
         {
             //if it your turn start countDownTimer, every five seconds it update
-            new CountDownTimer(gameroom.getRoundTime()*1000, 5000) {
+            new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
                     if(myCanvasView.getArrayList()==null || myCanvasView.getArrayList().size()==0)
@@ -92,12 +100,17 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
                 }
 
+
+
                 public void onFinish() {
                     dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
                     if (counter==gameroom.getCounterOfPlayers()-1)
                         counter=0;
                     else
                         counter++;
+
+
+                    //db.collection("GameRooms").document(uidRef).collection("Draw")
                 }
             }.start();
 
@@ -107,6 +120,19 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
             listenForDraws(uidRef);
+            new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
+                public void onTick(long millisUntilFinished) {
+                }
+                public void onFinish() {
+                    if (counter==gameroom.getCounterOfPlayers()-1)
+                        counter=0;
+                    else
+                        counter++;
+
+                    if(registration!=null)
+                        registration.remove();
+                }
+            }.start();
         }
     }
 
@@ -141,14 +167,31 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForDraws(String uidRef)
             //listening for change-every time
     {
-        db.collection("GameRooms").document(uidRef).collection("Draw").addSnapshotListener(new EventListener<QuerySnapshot>() {
+       Query query = db.collection("GameRooms").document(uidRef).collection("Drawss");
+
+        registration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
                 if(value.getDocuments().size()==0)
                     return;
-                Draw[] arr = new Draw[1];// = new ArrayList<>();
+                Draw[] arr = new Draw[1];
+                /*for (DocumentChange doc:value.getDocumentChanges())
+                {
+                    switch (doc.getType())
+                    {
+                        case ADDED:
+                            arr = TreeMapToDraw(doc.getDocument().getData());
+                            myCanvasView.drawFromDB(arr);
+                            break;
+                        case MODIFIED:
+                            arr = TreeMapToDraw(doc.getDocument().getData());
+                            myCanvasView.drawFromDB(arr);
+                            break;
 
+
+                    }
+                }*/
                 for (DocumentSnapshot doc:value.getDocuments()) {
                     // each doc is TreeMap of Hashmap
                     // each hashmap represent a draw object
@@ -189,8 +232,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
             // add d to the arraylist
             arrDraw[index] =d;
-
-
         }
 
 
