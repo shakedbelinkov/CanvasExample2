@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -46,8 +47,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
-    private int counter=0;
-
+    private int counter=0;//count whose turn is it
+    private ListView lv;//list view
+    private MessageAdapter messageAdapter;
+    private ArrayList<Massage> massages=new ArrayList<>();
 
 
     ListenerRegistration registration = null;
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
+            ConstraintLayout cl = findViewById(R.id.innerLayout);
+            cl.setVisibility(View.VISIBLE);
             //if it your turn start countDownTimer, every five seconds it update
             new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
 
@@ -167,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForDraws(String uidRef)
             //listening for change-every time
     {
-       Query query = db.collection("GameRooms").document(uidRef).collection("Drawss");
+       Query query = db.collection("GameRooms").document(uidRef).collection("Draw");
 
         registration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -196,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     // each doc is TreeMap of Hashmap
                     // each hashmap represent a draw object
                     arr = TreeMapToDraw(doc.getData());
-                    myCanvasView.drawFromDB(arr);
+                /////    myCanvasView.drawFromDB(arr);
 
 
                 }
@@ -263,6 +268,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
             }
         });
+    }
+    public void ListView()
+    {
+        messageAdapter=new MessageAdapter(this,0,0,massages);
+        lv=findViewById(R.id.listview_chat);
+        lv.setAdapter(messageAdapter);
     }
     public String whoseTurn()
     {

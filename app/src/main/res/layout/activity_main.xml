@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/canvas01">
@@ -205,6 +206,16 @@
             app:layout_constraintTop_toBottomOf="@+id/White"
             app:srcCompat="@drawable/trash3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ListView
+        android:id="@+id/listview_chat"
+        android:layout_width="377dp"
+        android:layout_height="174dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="4dp"
+        android:background="#F1ECEC"
+        app:layout_constraintStart_toStartOf="@+id/innerLayout"
+        app:layout_constraintTop_toBottomOf="@+id/canvas01"></ListView>
 
     <Button
         android:id="@+id/leaveGameButton"
