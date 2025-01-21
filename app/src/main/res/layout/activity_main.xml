@@ -12,8 +12,8 @@
 
     <com.example.Shcrible.MyCanvasView
         android:id="@+id/canvas01"
-        android:layout_width="385dp"
-        android:layout_height="415dp"
+        android:layout_width="384dp"
+        android:layout_height="348dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -205,17 +205,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/White"
             app:srcCompat="@drawable/trash3" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <ListView
         android:id="@+id/listview_chat"
-        android:layout_width="377dp"
-        android:layout_height="174dp"
+        android:layout_width="380dp"
+        android:layout_height="220dp"
         android:layout_marginStart="18dp"
         android:layout_marginTop="4dp"
         android:background="#F1ECEC"
         app:layout_constraintStart_toStartOf="@+id/innerLayout"
         app:layout_constraintTop_toBottomOf="@+id/canvas01"></ListView>
+
+    <EditText
+        android:id="@+id/massageBox"
+        android:layout_width="385dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="11dp"
+        android:background="#F6F0F0"
+        android:cursorVisible="false"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name"
+        android:textColorHint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/innerLayout" />
 
     <Button
         android:id="@+id/leaveGameButton"
@@ -230,9 +250,20 @@
         android:text="leave game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/innerLayout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.846" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="88dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="13dp"
+        android:onClick="SendMassage"
+        android:text="send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/innerLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

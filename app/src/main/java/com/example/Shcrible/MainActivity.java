@@ -7,7 +7,9 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,12 +40,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete{
+public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMassage.AddMassageComplete{
 
     private MyCanvasView myCanvasView;
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw=new DBDraw(this);
+    private DBMassage dbMassage=new DBMassage(this);
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
@@ -96,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.VISIBLE);
+            ListView listView=findViewById(R.id.listview_chat);
+            listView.setVisibility(View.INVISIBLE);
+            EditText editText=findViewById(R.id.massageBox);
+            editText.setVisibility(View.INVISIBLE);
             //if it your turn start countDownTimer, every five seconds it update
             new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
 
@@ -104,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         return;
                     dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
                 }
-
 
 
                 public void onFinish() {
@@ -124,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
+            ListView listView=findViewById(R.id.listview_chat);
+            listView.setVisibility(View.VISIBLE);
+            EditText editText=findViewById(R.id.massageBox);
+            editText.setVisibility(View.VISIBLE);
             listenForDraws(uidRef);
             new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
                 public void onTick(long millisUntilFinished) {
@@ -172,8 +182,24 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForDraws(String uidRef)
             //listening for change-every time
     {
-       Query query = db.collection("GameRooms").document(uidRef).collection("Draw");
+        db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+           @Override
+           public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+               if(!value.exists() || value.getData()==null)
+                   return;
+               Draw[] arr = new Draw[1];
+               arr = TreeMapToDraw(value.getData());
+               if(arr==null)
+                   return;
+          //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
 
+                    Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " +arr.length);
+               myCanvasView.drawFromDB(arr);
+
+           }
+       });
+
+        /* Query query =
         registration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -181,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 if(value.getDocuments().size()==0)
                     return;
                 Draw[] arr = new Draw[1];
-                /*for (DocumentChange doc:value.getDocumentChanges())
+                for (DocumentChange doc:value.getDocumentChanges())
                 {
                     switch (doc.getType())
                     {
@@ -196,17 +222,19 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
 
                     }
-                }*/
+                }
                 for (DocumentSnapshot doc:value.getDocuments()) {
                     // each doc is TreeMap of Hashmap
                     // each hashmap represent a draw object
                     arr = TreeMapToDraw(doc.getData());
-                /////    myCanvasView.drawFromDB(arr);
+                    myCanvasView.drawFromDB(arr);
 
 
                 }
             }
         });
+
+         */
     }
 
     // TREEMAP
@@ -278,5 +306,33 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public String whoseTurn()
     {
         return uIDs.get(counter);
+    }
+
+    public void SendMassage(View view) {
+        EditText massage=findViewById(R.id.massageBox);
+        String massageText=massage.getText().toString();
+        dbMassage.addMassage(massageText,uidRef);
+    }
+    public void ListenForMassage()
+    {
+        /*db.collection("GameRooms").document(uidRef).collection("Massage").addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                if(value.exists())
+                {
+
+                    Massage msg=value.toObject(Massage.class);
+                    massages.add(msg);
+                    lv=findViewById(R.id.listview_chat);
+                    messageAdapter=new MessageAdapter(this,0,0,massages);
+                }
+            }
+        });*/
+    }
+
+    @Override
+    public void onMassageComplete(boolean s) {
+
     }
 }

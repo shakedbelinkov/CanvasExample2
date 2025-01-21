@@ -101,16 +101,16 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 //when the moving start-start the path on x,y
-                touchStart(x, y);
+                touchStart(x, y,1);
                 break;
             case MotionEvent.ACTION_MOVE:
                 //when the brush move-start a path to x,y
-                touchMove(x, y);
+                touchMove(x, y,1);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 //when the moving stop-end the painting
-                touchUp();
+                touchUp(1);
                 break;
             default:
         }
@@ -132,14 +132,14 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
                 if (draws[i].getType()==Consts.DELETE_ALL)
                     delete();
                 else
-                    touchStart(draws[i].getInitialX(),draws[i].getInitialY());
+                    touchStart(draws[i].getInitialX(),draws[i].getInitialY(),2);
             }
             if (draws[i].getType()==Consts.START_DRAW)
-                touchStart(draws[i].getInitialX(),draws[i].getInitialY());
+                touchStart(draws[i].getInitialX(),draws[i].getInitialY(),2);
            if (draws[i].getType()==Consts.MOVE_DRAW)
-            touchMove(draws[i].getInitialX(),draws[i].getInitialY());
+            touchMove(draws[i].getInitialX(),draws[i].getInitialY(),2);
            if (draws[i].getType()==Consts.END_DRAW)
-                touchUp();
+                touchUp(2);
             if (draws[i].getType()==Consts.DELETE_ALL)
                 delete();
            else if (i==draws.length-1)//if the last draw isn't end draw
@@ -147,43 +147,55 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
                if (draws[i].getType()==Consts.DELETE_ALL)
                    delete();
                else
-                   touchUp();
+                   touchUp(2);
            }
         }
 
     }
-    private void touchStart(float x, float y) {
+    private void touchStart(float x, float y,int type) {
         //start the path on x,y
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
-        Draw d=new Draw(x,y,0,0,Consts.START_DRAW,mDrawColor,brushSize);
-        updateCounter++;
-        draws.add(d);
+        if (type==1) {
+            Draw d = new Draw(x, y, 0, 0, Consts.START_DRAW, mDrawColor, brushSize);
+            updateCounter++;
+            draws.add(d);
+            Log.d("DRAWS", draws.toString());
+        }
+
     }
 
 
 
-    private void touchMove(float x, float y) {
+    private void touchMove(float x, float y,int type) {
         //move the path to x,y
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
             Draw d=new Draw(mX,mY,(x + mX)/2,(y + mY)/2,Consts.MOVE_DRAW,mDrawColor,brushSize);
-            updateCounter++;
             mX = x;
             mY = y;
             mExtraCanvas.drawPath(mPath, mPaint);
-            draws.add(d);
+            if (type==1) {
+                draws.add(d);
+                Log.d("DRAWS", draws.toString());
+                updateCounter++;
+            }
         }
     }
-    private void touchUp() {
+    private void touchUp(int type) {
         Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor,brushSize);
-        updateCounter++;
-        draws.add(d);
+        if (type==1) {
+            updateCounter++;
+            draws.add(d);
+            Log.d("DRAWS", draws.toString());
+            lastUpdate=updateCounter;
+        }
+
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
-        lastUpdate=updateCounter;
+
         mPath.reset();
     }
     public void changeBrushColor(int color)
@@ -218,6 +230,8 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     public ArrayList<Draw>getArrayList()
     {
-        return new ArrayList<Draw>(draws.subList(lastUpdate,updateCounter)) ;
+        ArrayList<Draw> arrToDB = new ArrayList<Draw> (draws.subList(lastUpdate,updateCounter)) ;
+        lastUpdate = updateCounter;
+        return arrToDB;
     }
 }
