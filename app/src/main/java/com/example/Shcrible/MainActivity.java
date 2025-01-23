@@ -20,9 +20,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -45,14 +49,15 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private MyCanvasView myCanvasView;
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DBDraw dbDraw=new DBDraw(this);
-    private DBMassage dbMassage=new DBMassage(this);
+    private DBDraw dbDraw;
+    private DBMassage dbMassage;
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
     private int counter=0;//count whose turn is it
-    private ListView lv;//list view
+    private RecyclerView lv;
     private MessageAdapter messageAdapter;
+    private CollectionReference msgRef;
     private ArrayList<Massage> massages=new ArrayList<>();
 
 
@@ -63,8 +68,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
-      //  myCanvasView=new MyCanvasView(this);
+        //msgRef =db.collection("Massage");
+        dbMassage=new DBMassage(this);
+        dbDraw=new DBDraw(this);
         myCanvasView = findViewById(R.id.canvas01);
         Intent takeDetails = getIntent();
         uidRef=takeDetails.getStringExtra("gameRoomCode");
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void initUI()
     {
-
+        //setRecyclerView();
        db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
            @Override
            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.VISIBLE);
-            ListView listView=findViewById(R.id.listview_chat);
+            RecyclerView listView=findViewById(R.id.listview_chat);
             listView.setVisibility(View.INVISIBLE);
             EditText editText=findViewById(R.id.massageBox);
             editText.setVisibility(View.INVISIBLE);
@@ -130,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
-            ListView listView=findViewById(R.id.listview_chat);
+            RecyclerView listView=findViewById(R.id.listview_chat);
             listView.setVisibility(View.VISIBLE);
             EditText editText=findViewById(R.id.massageBox);
             editText.setVisibility(View.VISIBLE);
@@ -297,14 +305,20 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         });
     }
-    public void ListView()
+    public void setRecyclerView()
     {
-        messageAdapter=new MessageAdapter(this,0,0,massages);
         lv=findViewById(R.id.listview_chat);
+        lv.setLayoutManager(new LinearLayoutManager(this));
+        FirestoreRecyclerOptions<Massage> options = new FirestoreRecyclerOptions.Builder<Massage>()
+                .setQuery(msgRef,Massage.class)
+                .build();
+        messageAdapter = new MessageAdapter(options);
         lv.setAdapter(messageAdapter);
     }
     public String whoseTurn()
     {
+        if (counter==uidRef.length())
+            counter=0;
         return uIDs.get(counter);
     }
 
@@ -313,23 +327,37 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         String massageText=massage.getText().toString();
         dbMassage.addMassage(massageText,uidRef);
     }
-    public void ListenForMassage()
+    /*public void ListenForMassage()
     {
-        /*db.collection("GameRooms").document(uidRef).collection("Massage").addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+        db.collection("GameRooms").document(uidRef).collection("Massage").addSnapshotListener(this,new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                if(value.exists())
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(value!=null && !value.isEmpty())
                 {
 
                     Massage msg=value.toObject(Massage.class);
                     massages.add(msg);
                     lv=findViewById(R.id.listview_chat);
-                    messageAdapter=new MessageAdapter(this,0,0,massages);
+                    messageAdapter.setMassages(massages);
+                    lv.setAdapter(messageAdapter);
                 }
             }
-        });*/
-    }
+        });
+
+
+    this,new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+
+            }
+        });
+    }*/
+   /*@Override
+    protected void onStart() {
+        super.onStart();
+        messageAdapter.startListening();
+    }*/
 
     @Override
     public void onMassageComplete(boolean s) {

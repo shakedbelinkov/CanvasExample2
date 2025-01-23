@@ -210,7 +210,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listview_chat"
         android:layout_width="380dp"
         android:layout_height="220dp"
@@ -218,7 +218,7 @@
         android:layout_marginTop="4dp"
         android:background="#F1ECEC"
         app:layout_constraintStart_toStartOf="@+id/innerLayout"
-        app:layout_constraintTop_toBottomOf="@+id/canvas01"></ListView>
+        app:layout_constraintTop_toBottomOf="@+id/canvas01"></androidx.recyclerview.widget.RecyclerView>
 
     <EditText
         android:id="@+id/massageBox"
