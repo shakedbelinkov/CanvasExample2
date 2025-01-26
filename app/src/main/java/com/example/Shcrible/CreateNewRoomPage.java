@@ -2,6 +2,7 @@ package com.example.Shcrible;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.concurrent.BlockingDeque;
 
 public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
      private Intent intent;
@@ -52,26 +55,67 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTime.setAdapter(adapter3);
 
-        spinnerTime.setOnItemSelectedListener(this);
-        spinnerRounds.setOnItemSelectedListener(this);
-        spinnerPlayer.setOnItemSelectedListener(this);
+        spinnerTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String answer= adapterView.getItemAtPosition(i).toString();//answer
+                int result = Integer.valueOf(answer);
+                numPlayers=result;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerRounds.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String answer= adapterView.getItemAtPosition(i).toString();//answer
+                int result = Integer.valueOf(answer);
+                numRounds=result;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerPlayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String answer= adapterView.getItemAtPosition(i).toString();//answer
+                int result = Integer.valueOf(answer);
+                time=result;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         //when someone select option on one of the spinner. i put the value on the correct variable
+     //   if(!(view instanceof Spinner))
+    //    {
+    //        return;
+    //    }
 
-        if(!(view instanceof Spinner))
+        if(id==R.id.timeForRound)
         {
-            return;
+            Log.d("TAG", "onItemSelected: ");
         }
         String answer= parent.getItemAtPosition(pos).toString();//answer
-        String name = view.getTag().toString();//spinner name
 
         int result = Integer.valueOf(answer);
 
+        if(view == spinnerRounds)
+            numRounds = result;
 
-
+/*
         if(name.equals(spinnerRounds.getTag()))
         {
             numRounds = result;
@@ -83,6 +127,8 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
             numPlayers = result;
 
 
+
+ */
 
     }
 

@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,13 +45,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMassage.AddMassageComplete{
+public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete{
 
     private MyCanvasView myCanvasView;
     private String uidRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw;
-    private DBMassage dbMassage;
+    private DBMessage dbMessage;
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
     private ArrayList<Draw> draws=new ArrayList<>();
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
-    private ArrayList<Massage> massages=new ArrayList<>();
+    private ArrayList<Message> messages=new ArrayList<>();
+    private int second;
 
 
     ListenerRegistration registration = null;
@@ -68,14 +70,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
         setContentView(R.layout.activity_main);
-        //msgRef =db.collection("Massage");
-        dbMassage=new DBMassage(this);
+        dbMessage=new DBMessage(this);
         dbDraw=new DBDraw(this);
         myCanvasView = findViewById(R.id.canvas01);
         Intent takeDetails = getIntent();
         uidRef=takeDetails.getStringExtra("gameRoomCode");
+        msgRef =db.collection("GameRooms").document(uidRef).collection("Message");
         initUI();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.startButton), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void initUI()
     {
-        //setRecyclerView();
+        setRecyclerView();
        db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
            @Override
            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                {
                    gameroom=task.getResult().toObject(GameRoom.class);
                    uIDs=gameroom.getUIDs();
+                   second=gameroom.getRoundTime();
                    startTurn();
                }
            }
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             //start new turn
     {
         String name=whoseTurn();
+        Timer();
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
@@ -109,8 +112,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             cl.setVisibility(View.VISIBLE);
             RecyclerView listView=findViewById(R.id.listview_chat);
             listView.setVisibility(View.INVISIBLE);
-            EditText editText=findViewById(R.id.massageBox);
+            EditText editText=findViewById(R.id.messageBox);
             editText.setVisibility(View.INVISIBLE);
+            Button sendButton=findViewById(R.id.sendButton);
+            sendButton.setVisibility(View.INVISIBLE);
             //if it your turn start countDownTimer, every five seconds it update
             new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
 
@@ -140,8 +145,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             cl.setVisibility(View.INVISIBLE);
             RecyclerView listView=findViewById(R.id.listview_chat);
             listView.setVisibility(View.VISIBLE);
-            EditText editText=findViewById(R.id.massageBox);
+            EditText editText=findViewById(R.id.messageBox);
             editText.setVisibility(View.VISIBLE);
+            Button sendButton=findViewById(R.id.sendButton);
+            sendButton.setVisibility(View.VISIBLE);
             listenForDraws(uidRef);
             new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
                 public void onTick(long millisUntilFinished) {
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                    return;
           //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
 
-                    Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " +arr.length);
+               Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " +arr.length);
                myCanvasView.drawFromDB(arr);
 
            }
@@ -307,10 +314,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void setRecyclerView()
     {
+        //Query query=msgRef.orderBy("name");
         lv=findViewById(R.id.listview_chat);
+        lv.setHasFixedSize(true);
         lv.setLayoutManager(new LinearLayoutManager(this));
-        FirestoreRecyclerOptions<Massage> options = new FirestoreRecyclerOptions.Builder<Massage>()
-                .setQuery(msgRef,Massage.class)
+        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
+                .setQuery(msgRef,Message.class)
                 .build();
         messageAdapter = new MessageAdapter(options);
         lv.setAdapter(messageAdapter);
@@ -322,45 +331,44 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         return uIDs.get(counter);
     }
 
-    public void SendMassage(View view) {
-        EditText massage=findViewById(R.id.massageBox);
-        String massageText=massage.getText().toString();
-        dbMassage.addMassage(massageText,uidRef);
+    public void SendMessage(View view) {
+        EditText message=findViewById(R.id.messageBox);
+        String messageText=message.getText().toString();
+        message.setText("");
+        Message msg=new Message(DBAuth.getUserName(),messageText);
+        dbMessage.addMessage(msg,uidRef);
     }
-    /*public void ListenForMassage()
-    {
-        db.collection("GameRooms").document(uidRef).collection("Massage").addSnapshotListener(this,new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value!=null && !value.isEmpty())
-                {
-
-                    Massage msg=value.toObject(Massage.class);
-                    massages.add(msg);
-                    lv=findViewById(R.id.listview_chat);
-                    messageAdapter.setMassages(massages);
-                    lv.setAdapter(messageAdapter);
-                }
-            }
-        });
-
-
-    this,new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-
-            }
-        });
-    }*/
-   /*@Override
+    @Override
     protected void onStart() {
         super.onStart();
         messageAdapter.startListening();
-    }*/
+    }
 
     @Override
-    public void onMassageComplete(boolean s) {
+    protected void onStop() {
+        super.onStop();
+        messageAdapter.stopListening();
+    }
+
+    @Override
+    public void onMessageComplete(boolean s) {
 
     }
+
+    public void Timer() {
+        new CountDownTimer(gameroom.getRoundTime()*1000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                TextView timer=findViewById(R.id.timer);
+                if (second<10)
+                    timer.setText("00:0"+second);
+                else
+                    timer.setText("00:"+second);
+                second--;
+            }
+            public void onFinish() {
+                second=gameroom.getRoundTime();
+            }
+        }.start();
+    }
+
 }

@@ -191,7 +191,6 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
             updateCounter++;
             draws.add(d);
             Log.d("DRAWS", draws.toString());
-            lastUpdate=updateCounter;
         }
 
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
