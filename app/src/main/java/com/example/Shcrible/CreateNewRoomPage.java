@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.concurrent.BlockingDeque;
 
-public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CreateNewRoomPage extends AppCompatActivity  {
      private Intent intent;
     Spinner spinnerPlayer,spinnerRounds,spinnerTime;
 
@@ -60,7 +60,7 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String answer= adapterView.getItemAtPosition(i).toString();//answer
                 int result = Integer.valueOf(answer);
-                numPlayers=result;
+                time=result;
             }
 
             @Override
@@ -86,7 +86,7 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String answer= adapterView.getItemAtPosition(i).toString();//answer
                 int result = Integer.valueOf(answer);
-                time=result;
+                numPlayers=result;
             }
 
             @Override
@@ -97,45 +97,6 @@ public class CreateNewRoomPage extends AppCompatActivity implements AdapterView.
 
     }
 
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        //when someone select option on one of the spinner. i put the value on the correct variable
-     //   if(!(view instanceof Spinner))
-    //    {
-    //        return;
-    //    }
-
-        if(id==R.id.timeForRound)
-        {
-            Log.d("TAG", "onItemSelected: ");
-        }
-        String answer= parent.getItemAtPosition(pos).toString();//answer
-
-        int result = Integer.valueOf(answer);
-
-        if(view == spinnerRounds)
-            numRounds = result;
-
-/*
-        if(name.equals(spinnerRounds.getTag()))
-        {
-            numRounds = result;
-
-        }
-        else if (name.equals(spinnerTime.getTag()))
-            time = result;
-        else
-            numPlayers = result;
-
-
-
- */
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        //if nothing selected
-    }
 
     public void startNextActivity(View view) {
         //when the user finish to choose we move to the next activity=> WaitingRoom

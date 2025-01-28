@@ -45,25 +45,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete{
+public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete {
 
     private MyCanvasView myCanvasView;
-    private String uidRef;
+    private String uidRef, answer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw;
     private DBMessage dbMessage;
+    private DBGameRoom dbGameRoom;
     private GameRoom gameroom;
     private ArrayList<String> uIDs;
-    private ArrayList<Draw> draws=new ArrayList<>();
-    private int counter=0;//count whose turn is it
+    private ArrayList<Draw> draws = new ArrayList<>();
+    private int counter = 0;//count whose turn is it
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
-    private ArrayList<Message> messages=new ArrayList<>();
-    private int second;
-
-
-    ListenerRegistration registration = null;
+    private ArrayList<Message> messages = new ArrayList<>();
+    private int second;//second dor timer
+    private int turn = 1;
+    private Word word = new Word();
 
 
     @Override
@@ -71,12 +71,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        dbMessage=new DBMessage(this);
-        dbDraw=new DBDraw(this);
+        dbMessage = new DBMessage(this);
+        dbDraw = new DBDraw(this);
+        dbGameRoom = new DBGameRoom(this);
         myCanvasView = findViewById(R.id.canvas01);
         Intent takeDetails = getIntent();
-        uidRef=takeDetails.getStringExtra("gameRoomCode");
-        msgRef =db.collection("GameRooms").document(uidRef).collection("Message");
+        uidRef = takeDetails.getStringExtra("gameRoomCode");
+        msgRef = db.collection("GameRooms").document(uidRef).collection("Message");
         initUI();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.startButton), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -84,88 +85,93 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             return insets;
         });
     }
-    public void initUI()
-    {
+
+    public void initUI() {
         setRecyclerView();
-       db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-           @Override
-           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-               if (task.isSuccessful())
-               {
-                   gameroom=task.getResult().toObject(GameRoom.class);
-                   uIDs=gameroom.getUIDs();
-                   second=gameroom.getRoundTime();
-                   startTurn();
-               }
-           }
-       });
+        db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    gameroom = task.getResult().toObject(GameRoom.class);
+                    uIDs = gameroom.getUIDs();
+                    startTurn();
+                }
+            }
+        });
     }
+
     public void startTurn()
-            //start new turn
+    //start new turn
     {
-        String name=whoseTurn();
+        //choose whose turn is it
+        String name = whoseTurn();
+        TextView textView = findViewById(R.id.word);
+        second = gameroom.getRoundTime();
         Timer();
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
+            word.ChooseWord();
+            textView.setText(word.getWord());
+            gameroom.setWord(word.getWord());
+            dbGameRoom.addGameRoom(gameroom, uidRef);
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.VISIBLE);
-            RecyclerView listView=findViewById(R.id.listview_chat);
+            RecyclerView listView = findViewById(R.id.listview_chat);
             listView.setVisibility(View.INVISIBLE);
-            EditText editText=findViewById(R.id.messageBox);
+            EditText editText = findViewById(R.id.messageBox);
             editText.setVisibility(View.INVISIBLE);
-            Button sendButton=findViewById(R.id.sendButton);
+            Button sendButton = findViewById(R.id.sendButton);
             sendButton.setVisibility(View.INVISIBLE);
             //if it your turn start countDownTimer, every five seconds it update
-            new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
+            new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
-                    if(myCanvasView.getArrayList()==null || myCanvasView.getArrayList().size()==0)
+                    if (myCanvasView.getArrayList() == null || myCanvasView.getArrayList().size() == 0)
                         return;
-                    dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
+                    dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
                 }
 
 
                 public void onFinish() {
-                    dbDraw.addDraw(myCanvasView.getArrayList(),uidRef);
-                    if (counter==gameroom.getCounterOfPlayers()-1)
-                        counter=0;
-                    else
-                        counter++;
-
-
-                    //db.collection("GameRooms").document(uidRef).collection("Draw")
+                    if (turn <= gameroom.getRoundNum()) {
+                        dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
+                        if (counter == gameroom.getCounterOfPlayers() - 1)
+                            counter = 0;
+                        else
+                            counter++;
+                        startTurn();
+                    }
                 }
             }.start();
 
-        }
-        else
-        {
+        } else {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
-            RecyclerView listView=findViewById(R.id.listview_chat);
+            RecyclerView listView = findViewById(R.id.listview_chat);
             listView.setVisibility(View.VISIBLE);
-            EditText editText=findViewById(R.id.messageBox);
+            EditText editText = findViewById(R.id.messageBox);
             editText.setVisibility(View.VISIBLE);
-            Button sendButton=findViewById(R.id.sendButton);
+            Button sendButton = findViewById(R.id.sendButton);
             sendButton.setVisibility(View.VISIBLE);
+            listenForWord();
             listenForDraws(uidRef);
-            new CountDownTimer(gameroom.getRoundTime()*1000, 2000) {
+            new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
                 public void onTick(long millisUntilFinished) {
                 }
-                public void onFinish() {
-                    if (counter==gameroom.getCounterOfPlayers()-1)
-                        counter=0;
-                    else
-                        counter++;
 
-                    if(registration!=null)
-                        registration.remove();
+                public void onFinish() {
+                    if (turn <= gameroom.getRoundNum()) {
+                        if (counter == gameroom.getCounterOfPlayers() - 1)
+                            counter = 0;
+                        else
+                            counter++;
+                        startTurn();
+                    }
                 }
             }.start();
         }
     }
-
 
 
     public void changeBrushColor(View view) {
@@ -192,27 +198,28 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     @Override
     public void onDrawComplete(boolean s) {
-        Toast.makeText(this,"Draw " + s,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Draw " + s, Toast.LENGTH_LONG).show();
     }
+
     public void listenForDraws(String uidRef)
-            //listening for change-every time
+    //listening for change-every time
     {
-        db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
-           @Override
-           public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-               if(!value.exists() || value.getData()==null)
-                   return;
-               Draw[] arr = new Draw[1];
-               arr = TreeMapToDraw(value.getData());
-               if(arr==null)
-                   return;
-          //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
+        db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (!value.exists() || value.getData() == null)
+                    return;
+                Draw[] arr = new Draw[1];
+                arr = TreeMapToDraw(value.getData());
+                if (arr == null)
+                    return;
+                //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
 
-               Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " +arr.length);
-               myCanvasView.drawFromDB(arr);
+                Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " + arr.length);
+                myCanvasView.drawFromDB(arr);
 
-           }
-       });
+            }
+        });
 
         /* Query query =
         registration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -249,39 +256,36 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         });
 
+
          */
     }
 
     // TREEMAP
     // Each String represent index of the object in the draw array
     // each value / Object represent an hashmap that is converted to a DRAW object
-    public Draw[] TreeMapToDraw(Map<String,Object> map)
-    {
-        if(map.size()==0)
+    public Draw[] TreeMapToDraw(Map<String, Object> map) {
+        if (map.size() == 0)
             return null;
-        Draw[] arrDraw =new Draw[map.size()];
+        Draw[] arrDraw = new Draw[map.size()];
 
-        for (Map.Entry<String,Object> entry:map.entrySet())
-
-        {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             // key - map to an index in the array
             String key = entry.getKey();
             // each value map to draw object
-            Map<String,Object> value = (Map<String,Object>)entry.getValue();
+            Map<String, Object> value = (Map<String, Object>) entry.getValue();
 
             Draw d = new Draw();
             d.hashmapToDraw(value);
 
             // d should be a Draw object
 
-            int index =Integer.parseInt(key);
-            Log.d("TESTING!!!", "TreeMapToDraw: " +d);
+            int index = Integer.parseInt(key);
+            Log.d("TESTING!!!", "TreeMapToDraw: " + d);
 
 
             // add d to the arraylist
-            arrDraw[index] =d;
+            arrDraw[index] = d;
         }
-
 
 
         return arrDraw;
@@ -292,12 +296,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()) {
-                    if(task.getResult().exists()) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().exists()) {
                         GameRoom gameRoom = task.getResult().toObject(GameRoom.class);
 
                         //LOCALLY!!
-                        if(gameRoom.deleteUser(DBAuth.getUserUID())) {
+                        if (gameRoom.deleteUser(DBAuth.getUserUID())) {
                             // set in the firebase
                             db.collection("GameRooms").document(uidRef).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -312,32 +316,35 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         });
     }
-    public void setRecyclerView()
-    {
-        //Query query=msgRef.orderBy("name");
-        lv=findViewById(R.id.listview_chat);
+
+    public void setRecyclerView() {
+        Query query = msgRef.orderBy("timestamp", Query.Direction.DESCENDING);
+        lv = findViewById(R.id.listview_chat);
         lv.setHasFixedSize(true);
         lv.setLayoutManager(new LinearLayoutManager(this));
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
-                .setQuery(msgRef,Message.class)
+                .setQuery(msgRef, Message.class)
                 .build();
         messageAdapter = new MessageAdapter(options);
         lv.setAdapter(messageAdapter);
     }
-    public String whoseTurn()
-    {
-        if (counter==uidRef.length())
-            counter=0;
+
+    public String whoseTurn() {
+        if (counter == uidRef.length())
+            counter = 0;
         return uIDs.get(counter);
     }
 
     public void SendMessage(View view) {
-        EditText message=findViewById(R.id.messageBox);
-        String messageText=message.getText().toString();
+        EditText message = findViewById(R.id.messageBox);
+        String messageText = message.getText().toString();
         message.setText("");
-        Message msg=new Message(DBAuth.getUserName(),messageText);
-        dbMessage.addMessage(msg,uidRef);
+        Message msg = new Message(DBAuth.getUserName(), messageText);
+        if (word.isRight(messageText))
+            msg.setRight(true);
+        dbMessage.addMessage(msg, uidRef);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -356,19 +363,37 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void Timer() {
-        new CountDownTimer(gameroom.getRoundTime()*1000, 1000) {
+        new CountDownTimer(gameroom.getRoundTime() * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
-                TextView timer=findViewById(R.id.timer);
-                if (second<10)
-                    timer.setText("00:0"+second);
+                TextView timer = findViewById(R.id.timer);
+                if (second < 10)
+                    timer.setText("00:0" + second);
                 else
-                    timer.setText("00:"+second);
+                    timer.setText("00:" + second);
                 second--;
             }
+
             public void onFinish() {
-                second=gameroom.getRoundTime();
+                second = gameroom.getRoundTime();
             }
         }.start();
     }
 
+    public void listenForWord() {
+        db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value.exists()) {
+                    GameRoom gm = value.toObject(GameRoom.class);
+                    word.setWord(gm.getWord());
+                    TextView textView = findViewById(R.id.word);
+                    textView.setText(word.Clue());
+                }
+            }
+        });
+    }
+    @Override
+    public void onGameRoomComplete(boolean s) {
+
+    }
 }

@@ -1,12 +1,20 @@
 package com.example.Shcrible;
 
+import com.google.firebase.firestore.FieldValue;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Message {
     private String name;
     private String message;
+    private Map<String,Object> date = new HashMap<>();
+    private boolean isRight=false;
     public Message(String name,String message)
     {
         this.name=name;
         this.message=message;
+        this.date.put("timestamp", FieldValue.serverTimestamp());
     }
     public Message()
     {
@@ -31,5 +39,21 @@ public class Message {
     public String toString()
     {
         return name+": "+message;
+    }
+
+    public Map<String, Object> getDate() {
+        return date;
+    }
+
+    public void setDate(Map<String, Object> date) {
+        this.date = date;
+    }
+
+    public boolean isRight() {
+        return isRight;
+    }
+
+    public void setRight(boolean right) {
+        isRight = right;
     }
 }

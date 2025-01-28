@@ -39,6 +39,8 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         // Get element from your dataset at this position and replace the
 
         holder.messageTV.setText(model.getMessage());
+        if (model.isRight())
+            holder.messageTV.setTextColor(Integer.valueOf("#39b037"));
         holder.nameTV.setText(model.getName());
     }
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -11,6 +11,7 @@ public class GameRoom {
     private int roundTime;//time for a round
     private int counter=0;
     private boolean isStart=false;
+    private String word="";
 
 
 
@@ -111,5 +112,13 @@ public class GameRoom {
     public void setIsStart(boolean start) {
         //Log.d("isStart", "setStart: "+start);
         isStart = start;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 }
