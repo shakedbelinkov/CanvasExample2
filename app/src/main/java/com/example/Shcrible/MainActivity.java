@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
                 }
 
-
                 public void onFinish() {
                     if (turn <= gameroom.getRoundNum()) {
                         dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);

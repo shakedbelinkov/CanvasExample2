@@ -2,6 +2,7 @@ package com.example.Shcrible;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,10 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
         holder.messageTV.setText(model.getMessage());
         if (model.isRight())
-            holder.messageTV.setTextColor(Integer.valueOf("#39b037"));
+        {
+            holder.messageTV.setTextColor(Color.parseColor("#39b037"));
+            holder.nameTV.setTextColor(Color.parseColor("#39b037"));
+        }
         holder.nameTV.setText(model.getName());
     }
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

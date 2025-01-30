@@ -13,6 +13,8 @@ public class Word {
     public void ChooseWord()
     {
         Random random=new Random();
+        clue="";
+        clues=0;
         int num=random.nextInt(99);
         if (num!=lastIndex) {
             word = words[num];
@@ -28,6 +30,7 @@ public class Word {
     }
     public String Clue()
     {
+        clue="";
         for (int i=0;i<word.length();i++)
         {
             if (i<=clues)
