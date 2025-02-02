@@ -193,6 +193,9 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
             draws.add(d);
             Log.d("DRAWS", draws.toString());
         }
+        if (getArrayList() == null || getArrayList().size() == 0)
+            return;
+        db.addDraw(getArrayList());
 
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
 
@@ -216,6 +219,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         changeBackgroundColor(mBackgroundColor);
         Draw d=new Draw(0,0,0,0,Consts.DELETE_ALL,mBackgroundColor,brushSize);
         draws.add(d);
+        updateCounter++;
     }
     public void changeBrushSize(int size)
             //change the size of the brush
@@ -230,12 +234,13 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     public ArrayList<Draw>getArrayList()
     {
-        //ArrayList<Draw> arrToDB = new ArrayList<Draw> (draws.subList(lastUpdate,updateCounter)) ;
+        //lastUpdate=updateCounter;
+        ArrayList<Draw> arrToDB = new ArrayList<Draw> (draws.subList(lastUpdate,updateCounter)) ;
         //lastUpdate = updateCounter;
-        ArrayList<Draw> arrToDB=new ArrayList<>();
-        arrToDB.add(new Draw((float) 12.06,(float) 12.06,0,0,0, Color.BLUE,12));
-        arrToDB.add(new Draw((float) 12.06,(float) 12.06,(float) 25.6789,(float) 25.6789,1, Color.BLUE,12));
-        arrToDB.add(new Draw(0,0,0,0,2, Color.BLUE,12));
+        //ArrayList<Draw> arrToDB=new ArrayList<>();
+        //arrToDB.add(new Draw((float) 12.06,(float) 12.06,0,0,0, Color.BLUE,12));
+        //arrToDB.add(new Draw((float) 12.06,(float) 12.06,(float) 25.6789,(float) 25.6789,1, Color.BLUE,12));
+        //arrToDB.add(new Draw(0,0,0,0,2, Color.BLUE,12));
         return arrToDB;
     }
 }

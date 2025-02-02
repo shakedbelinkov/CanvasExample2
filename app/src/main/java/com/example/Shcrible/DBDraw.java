@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,24 +40,30 @@ public class DBDraw {
         return drawsAsMap;
     }
 
-    public void addDraw(ArrayList<Draw> draws, String uidRef)
+    public void addDraw(ArrayList<Draw> draws)
             //add draw to collection on firebase
     {
-        db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).set(arrayToMap(draws)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+
+
+        db.collection("GameRooms").document(MainActivity.uidRef).collection("Draw").document(MainActivity.uidRef).set(arrayToMap(draws)).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 addDrawComplete.onDrawComplete(task.isSuccessful());
 
             }
         });
-
-    /*.add(arrayToMap(draws)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+    }
+    public void removeDraw()
+    //add draw to collection on firebase
+    {
+        db.collection("GameRooms").document(MainActivity.uidRef).collection("Draw").document(MainActivity.uidRef).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
+            public void onComplete(@NonNull Task<Void> task) {
                 addDrawComplete.onDrawComplete(task.isSuccessful());
+
             }
         });
-
-     */
     }
+
 }

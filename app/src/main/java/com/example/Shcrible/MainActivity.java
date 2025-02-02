@@ -48,7 +48,7 @@ import java.util.TreeMap;
 public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete {
 
     private MyCanvasView myCanvasView;
-    private String uidRef, answer;
+    public static String uidRef="", answer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw;
     private DBMessage dbMessage;
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private int second;//second dor timer
     private int turn = 1;
     private Word word = new Word();
+    private ListenerRegistration lr;
 
 
     @Override
@@ -129,16 +130,17 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 public void onTick(long millisUntilFinished) {
                     if (myCanvasView.getArrayList() == null || myCanvasView.getArrayList().size() == 0)
                         return;
-                    dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
+                    //dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
                 }
 
                 public void onFinish() {
                     if (turn <= gameroom.getRoundNum()) {
-                        dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
+                        dbDraw.addDraw(myCanvasView.getArrayList());
                         if (counter == gameroom.getCounterOfPlayers() - 1)
                             counter = 0;
                         else
                             counter++;
+                        dbDraw.removeDraw();
                         startTurn();
                     }
                 }
@@ -165,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             counter = 0;
                         else
                             counter++;
+                        lr.remove();
                         startTurn();
                     }
                 }
@@ -203,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForDraws(String uidRef)
     //listening for change-every time
     {
-        db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        lr= db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (!value.exists() || value.getData() == null)
@@ -381,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForWord() {
         db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
+
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value.exists()) {
                     GameRoom gm = value.toObject(GameRoom.class);
