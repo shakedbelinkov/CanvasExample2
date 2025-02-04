@@ -50,6 +50,6 @@ public class Profile {
     }
 
     public void setPoints(int points) {
-        this.points = points;
+        this.points+=5;
     }
 }

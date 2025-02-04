@@ -32,6 +32,16 @@ public class DBGameRoom {
             }
         });
     }
+    public void UpdatePoints(String uidRef,int point)
+    {
+        db.collection("profiles").document(uidRef).update("points",point).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    addGameRoomComplete.onGameRoomComplete(task.isSuccessful());
+            }
+        });
+    }
 
 
 }

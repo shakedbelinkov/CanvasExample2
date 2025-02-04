@@ -37,6 +37,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.rpc.context.AttributeContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private DBMessage dbMessage;
     private DBGameRoom dbGameRoom;
     private GameRoom gameroom;
-    private ArrayList<String> uIDs;
+    private ArrayList<String> uIDs,winners;
     private ArrayList<Draw> draws = new ArrayList<>();
     private int counter = 0;//count whose turn is it
     private RecyclerView lv;
@@ -128,9 +129,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
-                    if (myCanvasView.getArrayList() == null || myCanvasView.getArrayList().size() == 0)
+                    ArrayList<Draw> arr =myCanvasView.getArrayList();
+                    if ( arr== null || arr.size() == 0)
                         return;
-                    //dbDraw.addDraw(myCanvasView.getArrayList(), uidRef);
+                    dbDraw.addDraw(arr);
                 }
 
                 public void onFinish() {
@@ -342,8 +344,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         String messageText = message.getText().toString();
         message.setText("");
         Message msg = new Message(DBAuth.getUserName(), messageText);
-        if (word.isRight(messageText))
+        if (word.isRight(messageText)) {
             msg.setRight(true);
+            winners.add(DBAuth.getUserUID());
+        }
         dbMessage.addMessage(msg, uidRef);
     }
 
@@ -397,6 +401,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     @Override
     public void onGameRoomComplete(boolean s) {
+
+    }
+    public void setPoint()
+    {
 
     }
 }
