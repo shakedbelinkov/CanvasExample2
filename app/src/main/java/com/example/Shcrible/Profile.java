@@ -19,10 +19,10 @@ public class Profile {
     public Profile() {
     }
 
-    public Profile(String name, String email, int points){
+    public Profile(String name, String email){
         this.name=name;
         this.email=email;
-        this.points = points;
+        this.points = 0;
     }
     public String getEmail() {
         return email;
@@ -50,6 +50,6 @@ public class Profile {
     }
 
     public void setPoints(int points) {
-        this.points+=5;
+        this.points+=points;
     }
 }

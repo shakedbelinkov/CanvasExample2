@@ -31,6 +31,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     private ArrayList<Draw> draws=new ArrayList<>();// arr of draws for the db
     private DBDraw db=new DBDraw(this);
     private int brushSize=12;
+    private int typePlayer=1;
     MyCanvasView(Context context, Bitmap mExtraBitmap) {
         this(context, null, mExtraBitmap);
     }
@@ -97,23 +98,26 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                //when the moving start-start the path on x,y
-                touchStart(x, y,1);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                //when the brush move-start a path to x,y
-                touchMove(x, y,1);
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                //when the moving stop-end the painting
-                touchUp(1);
-                break;
-            default:
+        if (typePlayer==1) {
+            float x = event.getX();
+            float y = event.getY();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    //when the moving start-start the path on x,y
+                    touchStart(x, y, 1);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    //when the brush move-start a path to x,y
+                    touchMove(x, y, 1);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    //when the moving stop-end the painting
+                    touchUp(1);
+                    break;
+                default:
+            }
+            return true;
         }
         return true;
     }
@@ -121,7 +125,6 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
 
     public void drawFromDB(Draw[] draws)
     {
-
         if(draws==null)
             return;
         for (int i=0;i<draws.length;i++)
@@ -193,9 +196,11 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
             draws.add(d);
             Log.d("DRAWS", draws.toString());
         }
-        if (getArrayList() == null || getArrayList().size() == 0)
+
+        ArrayList<Draw> a = getArrayList();
+        if (a== null || a.size() == 0)
             return;
-        db.addDraw(getArrayList());
+        db.addDraw(a);
 
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
 
@@ -242,5 +247,11 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         //arrToDB.add(new Draw((float) 12.06,(float) 12.06,(float) 25.6789,(float) 25.6789,1, Color.BLUE,12));
         //arrToDB.add(new Draw(0,0,0,0,2, Color.BLUE,12));
         return arrToDB;
+    }
+    public void ChangePlayerType(int type)
+    {
+        //1-draw
+        //2-not draw
+        this.typePlayer=type;
     }
 }

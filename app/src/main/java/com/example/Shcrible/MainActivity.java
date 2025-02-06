@@ -1,5 +1,6 @@
 package com.example.Shcrible;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private DBMessage dbMessage;
     private DBGameRoom dbGameRoom;
     private GameRoom gameroom;
-    private ArrayList<String> uIDs,winners;
+    private ArrayList<String> uIDs,winners = new ArrayList<>();
     private ArrayList<Draw> draws = new ArrayList<>();
     private int counter = 0;//count whose turn is it
     private RecyclerView lv;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private int turn = 1;
     private Word word = new Word();
     private ListenerRegistration lr;
+    private int typePlayer=1;
 
 
     @Override
@@ -125,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             editText.setVisibility(View.INVISIBLE);
             Button sendButton = findViewById(R.id.sendButton);
             sendButton.setVisibility(View.INVISIBLE);
+            typePlayer=1;
+            myCanvasView.ChangePlayerType(typePlayer);
             //if it your turn start countDownTimer, every five seconds it update
             new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
@@ -143,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         else
                             counter++;
                         dbDraw.removeDraw();
+                        setPoint();
+                        myCanvasView.delete();
                         startTurn();
                     }
                 }
@@ -157,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             editText.setVisibility(View.VISIBLE);
             Button sendButton = findViewById(R.id.sendButton);
             sendButton.setVisibility(View.VISIBLE);
+            typePlayer=2;
+            myCanvasView.ChangePlayerType(typePlayer);
             listenForWord();
             listenForDraws(uidRef);
             new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
@@ -170,6 +178,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         else
                             counter++;
                         lr.remove();
+                        setPoint();
+                        myCanvasView.delete();
                         startTurn();
                     }
                 }
@@ -225,43 +235,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         });
 
-        /* Query query =
-        registration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                if(value.getDocuments().size()==0)
-                    return;
-                Draw[] arr = new Draw[1];
-                for (DocumentChange doc:value.getDocumentChanges())
-                {
-                    switch (doc.getType())
-                    {
-                        case ADDED:
-                            arr = TreeMapToDraw(doc.getDocument().getData());
-                            myCanvasView.drawFromDB(arr);
-                            break;
-                        case MODIFIED:
-                            arr = TreeMapToDraw(doc.getDocument().getData());
-                            myCanvasView.drawFromDB(arr);
-                            break;
-
-
-                    }
-                }
-                for (DocumentSnapshot doc:value.getDocuments()) {
-                    // each doc is TreeMap of Hashmap
-                    // each hashmap represent a draw object
-                    arr = TreeMapToDraw(doc.getData());
-                    myCanvasView.drawFromDB(arr);
-
-
-                }
-            }
-        });
-
-
-         */
     }
 
     // TREEMAP
@@ -346,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         Message msg = new Message(DBAuth.getUserName(), messageText);
         if (word.isRight(messageText)) {
             msg.setRight(true);
-            winners.add(DBAuth.getUserUID());
+            winners.add(DBAuth.getUserName());
         }
         dbMessage.addMessage(msg, uidRef);
     }
@@ -405,6 +378,28 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void setPoint()
     {
+
+        int points=150;
+        if (winners!=null) {
+            for (int i = 0; i < winners.size(); i++) {
+                if (winners.get(i).equals(DBAuth.getUserName()))
+                    dbGameRoom.UpdatePoints(DBAuth.getUserUID(), points);
+                points -= 25;
+            }
+
+        }
+    }
+    public void SetDialog()
+    {
+        Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.end_round_dialog);
+        TextView txWord=dialog.findViewById(R.id.theWordIs);
+        txWord.setText(word.getWord());
+        TextView txWinner=dialog.findViewById(R.id.winner);
+        if (winners==null)
+            txWinner.setText("you fail");
+        txWinner.setText(winners.get(0));
+        winners.clear();
 
     }
 }
