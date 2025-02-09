@@ -19,7 +19,6 @@ public class Word {
         if (num!=lastIndex) {
             word = words[num];
             lastIndex=num;
-
         }
         else
             ChooseWord();

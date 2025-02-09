@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private GameRoom gameroom;
     private ArrayList<String> uIDs,winners = new ArrayList<>();
     private ArrayList<Draw> draws = new ArrayList<>();
-    private int counter = 0;//count whose turn is it
+    private int counter = 0,roundCounter=1;//count whose turn is it
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private int second;//second dor timer
     private int turn = 1;
     private Word word = new Word();
-    private ListenerRegistration lr;
+    private ListenerRegistration lr, wordListener;
     private int typePlayer=1;
 
 
@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView textView = findViewById(R.id.word);
         second = gameroom.getRoundTime();
         Timer();
+        if (gameroom.getRoundNum()<roundCounter)
+            return;
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
@@ -146,9 +148,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             counter = 0;
                         else
                             counter++;
+                        roundCounter++;
                         dbDraw.removeDraw();
                         setPoint();
                         myCanvasView.delete();
+                        SetDialog();
                         startTurn();
                     }
                 }
@@ -177,9 +181,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             counter = 0;
                         else
                             counter++;
+                        roundCounter++;
                         lr.remove();
+                        wordListener.remove();
                         setPoint();
                         myCanvasView.delete();
+                        SetDialog();
                         startTurn();
                     }
                 }
@@ -359,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void listenForWord() {
-        db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        wordListener=db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
 
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -383,10 +390,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         if (winners!=null) {
             for (int i = 0; i < winners.size(); i++) {
                 if (winners.get(i).equals(DBAuth.getUserName()))
-                    dbGameRoom.UpdatePoints(DBAuth.getUserUID(), points);
+                    dbGameRoom.UpdatePoints(winners.get(i), points);
                 points -= 25;
             }
-
+            if (winners.size()>gameroom.getCounterOfPlayers()/2||winners==null)
+                dbGameRoom.UpdatePoints(gameroom.getNames().get(counter),150);
+            else
+                dbGameRoom.UpdatePoints(gameroom.getNames().get(counter),50);
         }
     }
     public void SetDialog()
@@ -396,9 +406,16 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView txWord=dialog.findViewById(R.id.theWordIs);
         txWord.setText(word.getWord());
         TextView txWinner=dialog.findViewById(R.id.winner);
-        if (winners==null)
-            txWinner.setText("you fail");
-        txWinner.setText(winners.get(0));
+        TextView txPoints=dialog.findViewById(R.id.points);
+        if (winners!=null){
+            txWinner.setText(gameroom.getNames().get(counter));
+            txPoints.setText("+150");
+        }
+        else {
+            txWinner.setText(winners.get(0));
+            txPoints.setText("+"+(175-25*winners.size()));
+        }
+        dialog.show();
         winners.clear();
 
     }
