@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -182,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         else
                             counter++;
                         roundCounter++;
-                        lr.remove();
+                   //    lr.remove();
+                        Log.d("DEBUG", "onFinish: LR REMOVED!!");
                         wordListener.remove();
                         setPoint();
                         myCanvasView.delete();
@@ -225,7 +227,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void listenForDraws(String uidRef)
     //listening for change-every time
     {
-        lr= db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        DocumentReference dr =db.collection("GameRooms").document(uidRef).collection("Draw").document(uidRef);
+        lr = dr.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (!value.exists() || value.getData() == null)
@@ -241,6 +244,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
             }
         });
+
+
+
+
+
+
 
     }
 
