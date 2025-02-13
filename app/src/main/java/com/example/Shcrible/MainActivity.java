@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void setRecyclerView() {
-        Query query = msgRef.orderBy("timestamp", Query.Direction.DESCENDING);
+        //Query query = msgRef.orderBy("timestamp", Query.Direction.DESCENDING);
         lv = findViewById(R.id.listview_chat);
         lv.setHasFixedSize(true);
         lv.setLayoutManager(new LinearLayoutManager(this));

@@ -9,12 +9,16 @@ public class Message {
     private String name;
     private String message;
     private Map<String,Object> date = new HashMap<>();
+
+    //private FieldValue timestamp;
     private boolean isRight=false;
     public Message(String name,String message)
     {
         this.name=name;
         this.message=message;
         this.date.put("timestamp", FieldValue.serverTimestamp());
+        //this.timestamp = FieldValue.serverTimestamp();
+
     }
     public Message()
     {
@@ -41,13 +45,13 @@ public class Message {
         return name+": "+message;
     }
 
-    public Map<String, Object> getDate() {
-        return date;
+   /* public FieldValue getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(Map<String, Object> date) {
-        this.date = date;
-    }
+    public void setTimestamp(FieldValue t) {
+        this.timestamp = t;
+    }*/
 
     public boolean isRight() {
         return isRight;
@@ -55,5 +59,12 @@ public class Message {
 
     public void setRight(boolean right) {
         isRight = right;
+    }
+    public Map<String,Object> getDate() {
+        return date;
+    }
+
+    public void setDate(Map<String,Object> d) {
+        this.date = d;
     }
 }
