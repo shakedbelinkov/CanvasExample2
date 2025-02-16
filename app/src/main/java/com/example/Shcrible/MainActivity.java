@@ -299,8 +299,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             db.collection("GameRooms").document(uidRef).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful())
-                                        finish();
+                                    if (task.isSuccessful()) {
+
+                                        Intent intent=new Intent(MainActivity.this,GameLobby.class);
+                                        startActivity(intent);
+
+                                    }
                                 }
                             });
                         }

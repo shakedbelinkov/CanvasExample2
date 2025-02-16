@@ -11,53 +11,51 @@
         android:id="@+id/imageView3"
         android:layout_width="410dp"
         android:layout_height="292dp"
-        android:layout_marginEnd="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/color" />
 
-        <EditText
-            android:id="@+id/gameRoomCode"
-            android:layout_width="234dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="89dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="89dp"
+    <EditText
+        android:id="@+id/gameRoomCode"
+        android:layout_width="234dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="15dp"
 
-            android:background="@color/white"
-            android:hint="GameRoom Code"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:text=""
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        android:background="@color/white"
+        android:hint="GameRoom Code"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:text=""
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="106dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="106dp"
-            android:text="Login"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gameRoomCode"
-            app:layout_constraintVertical_bias="0.092" />
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Login"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameRoomCode"
+        app:layout_constraintVertical_bias="0.092" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="Enter GameRoom Code"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Enter GameRoom Code"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

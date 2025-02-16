@@ -12,9 +12,7 @@
         android:id="@+id/emailLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="37dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="44dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="email"
@@ -22,6 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
@@ -36,9 +35,7 @@
         android:id="@+id/passwordLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="34dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="36dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="password"
@@ -51,13 +48,11 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="159dp"
         android:layout_marginTop="200dp"
-        android:layout_marginEnd="159dp"
         android:text="Log In"
+        android:textColor="@color/black"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,11 +61,12 @@
         android:layout_width="172dp"
         android:layout_height="41dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="120dp"
         android:backgroundTint="#DA675F"
         android:onClick="LogIn"
         android:text="Log In"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordLogIn" />
 
     <ImageView
@@ -98,9 +94,8 @@
         android:id="@+id/imageView6"
         android:layout_width="312dp"
         android:layout_height="629dp"
-        android:layout_marginStart="156dp"
         android:layout_marginBottom="180dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/color4" />
+        app:srcCompat="@drawable/color4"
+        tools:layout_editor_absoluteX="156dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

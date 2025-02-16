@@ -3,9 +3,11 @@ package com.example.Shcrible;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -117,7 +119,14 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                     GameRoom gm=value.toObject(GameRoom.class);
                     names=gm.getNames();
                     lv=findViewById(R.id.playersList);
-                    arrayAdapter=new ArrayAdapter<String>(WaitingRoom.this, android.R.layout.simple_list_item_1,names);
+                    arrayAdapter=new ArrayAdapter<String>(WaitingRoom.this, android.R.layout.simple_list_item_1,android.R.id.text1,names){
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            TextView textView = (TextView) super.getView(position, convertView, parent);
+                            textView.setTextColor(Color.BLACK);
+                            return textView;
+                        }
+                    };
                     lv.setAdapter(arrayAdapter);
                     if (gm.getIsStart())
                     //if the attribute "isStart" is true- the game started, move to MainActivity
@@ -163,8 +172,10 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
                             db.collection("GameRooms").document(uidRef).set(gameRoom).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful())
-                                        finish();
+                                    if (task.isSuccessful()) {
+                                        Intent intent=new Intent(WaitingRoom.this,GameLobby.class);
+                                        startActivity(intent);
+                                    }
                                 }
                             });
                         }
