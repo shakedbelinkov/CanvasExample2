@@ -113,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView textView = findViewById(R.id.word);
         second = gameroom.getRoundTime();
         Timer();
-        if (gameroom.getRoundNum()<roundCounter)
+        //if all the player have gm.getRoundNum games the game stop
+        if (gameroom.getRoundNum()*2<roundCounter)
             return;
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
@@ -121,7 +122,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             word.ChooseWord();
             textView.setText(word.getWord());
             gameroom.setWord(word.getWord());
-            dbGameRoom.addGameRoom(gameroom, uidRef);
+            //dbGameRoom.addGameRoom(gameroom, uidRef);
+            dbGameRoom.updateWord(uidRef,word.getWord());
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.VISIBLE);
             RecyclerView listView = findViewById(R.id.listview_chat);
@@ -154,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         setPoint();
                         myCanvasView.delete();
                         SetDialog();
-                        startTurn();
                     }
                 }
             }.start();
@@ -183,13 +184,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         else
                             counter++;
                         roundCounter++;
-                   //    lr.remove();
+                        lr.remove();
                         Log.d("DEBUG", "onFinish: LR REMOVED!!");
                         wordListener.remove();
                         setPoint();
                         myCanvasView.delete();
                         SetDialog();
-                        startTurn();
                     }
                 }
             }.start();
@@ -244,13 +244,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
             }
         });
-
-
-
-
-
-
-
     }
 
     // TREEMAP
@@ -428,8 +421,31 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             txWinner.setText(winners.get(0));
             txPoints.setText("+"+(175-25*winners.size()));
         }
+        dialog.setCancelable(false);
         dialog.show();
         winners.clear();
+
+
+        new CountDownTimer(3000,1000)
+        {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                dialog.dismiss();
+                startTurn();
+            }
+        }.start();
+    }
+    public void SetEndGameDialog()
+    {
+        Dialog dialog=new Dialog(this);
+        dialog.setContentView(R.layout.end_game_dialog);
+        dialog.setCancelable(false);
+        dialog.show();
 
     }
 }

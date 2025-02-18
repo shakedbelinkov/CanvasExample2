@@ -1,5 +1,7 @@
 package com.example.Shcrible;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class DBGameRoom {
+
+
     public interface GameRoomComplete
     {
         void onGameRoomComplete(boolean s);
@@ -39,6 +43,17 @@ public class DBGameRoom {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful())
                     addGameRoomComplete.onGameRoomComplete(task.isSuccessful());
+            }
+        });
+    }
+
+
+    public void updateWord(String uidRef, String word) {
+
+        db.collection("GameRooms").document(uidRef).update("word",word).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("DBGameRoom", "word update : " + task.isSuccessful());
             }
         });
     }

@@ -44,10 +44,6 @@ public class GameLobby extends AppCompatActivity {
         setContentView(R.layout.activity_game_lobby);
 
 
-        // kHqSAzgOX0PNlvo8dLCWNQn0Sx33
-
-     //   listenForDraws("kHqSAzgOX0PNlvo8dLCWNQn0Sx33");
-
         name = DBAuth.getUserName();
         textView=findViewById(R.id.playerName);
         textView.setText("Hi "+name);
@@ -57,89 +53,6 @@ public class GameLobby extends AppCompatActivity {
             return insets;
         });
     }
-
-/*
-    ///
-    public void listenForDraws(String uidRef)
-    //listening for change-every time
-    {
-        Query query = db.collection("GameRooms").document(uidRef).collection("Draw");
-
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                if(value.getDocuments().size()==0)
-                    return;
-                Draw[] arr = new Draw[1];
-                for (DocumentChange doc:value.getDocumentChanges())
-                {
-                    switch (doc.getType())
-                    {
-                        case ADDED:
-                            arr = TreeMapToDraw(doc.getDocument().getData());
-                            myCanvasView.drawFromDB(arr);
-                            break;
-                        case MODIFIED:
-                            arr = TreeMapToDraw(doc.getDocument().getData());
-                            myCanvasView.drawFromDB(arr);
-                            break;
-
-
-                    }
-                }
-                for (DocumentSnapshot doc:value.getDocuments()) {
-                    // each doc is TreeMap of Hashmap
-                    // each hashmap represent a draw object
-                    arr = TreeMapToDraw(doc.getData());
-                    /////    myCanvasView.drawFromDB(arr);
-
-
-                }
-            }
-        });
-    }
-
-    // TREEMAP
-    // Each String represent index of the object in the draw array
-    // each value / Object represent an hashmap that is converted to a DRAW object
-    public Draw[] TreeMapToDraw(Map<String,Object> map)
-    {
-        if(map.size()==0)
-            return null;
-        Draw[] arrDraw =new Draw[map.size()];
-
-        for (Map.Entry<String,Object> entry:map.entrySet())
-
-        {
-            // key - map to an index in the array
-            String key = entry.getKey();
-            // each value map to draw object
-            Map<String,Object> value = (Map<String,Object>)entry.getValue();
-
-            Draw d = new Draw();
-            d.hashmapToDraw(value);
-
-            // d should be a Draw object
-
-            int index =Integer.parseInt(key);
-            Log.d("TESTING!!!", "TreeMapToDraw: " +d);
-
-
-            // add d to the arraylist
-            arrDraw[index] =d;
-        }
-
-
-
-        return arrDraw;
-    }
-
- */
-
-
-
-    ///
 
     public void createNewRoom(View view) {
         //move activity=> CreateNewRoomPage
@@ -175,7 +88,7 @@ public class GameLobby extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
-
+                    Log.d("onComplete", "onComplete: ");
                     if(task.getResult().exists()) {
                         GameRoom gameRoom = task.getResult().toObject(GameRoom.class);
 

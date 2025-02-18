@@ -239,13 +239,8 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     public ArrayList<Draw>getArrayList()
     {
-        //lastUpdate=updateCounter;
         ArrayList<Draw> arrToDB = new ArrayList<Draw> (draws.subList(lastUpdate,updateCounter)) ;
         lastUpdate = updateCounter;
-        //ArrayList<Draw> arrToDB=new ArrayList<>();
-        //arrToDB.add(new Draw((float) 12.06,(float) 12.06,0,0,0, Color.BLUE,12));
-        //arrToDB.add(new Draw((float) 12.06,(float) 12.06,(float) 25.6789,(float) 25.6789,1, Color.BLUE,12));
-        //arrToDB.add(new Draw(0,0,0,0,2, Color.BLUE,12));
         return arrToDB;
     }
     public void ChangePlayerType(int type)
