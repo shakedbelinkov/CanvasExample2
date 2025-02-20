@@ -114,8 +114,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         second = gameroom.getRoundTime();
         Timer();
         //if all the player have gm.getRoundNum games the game stop
-        if (gameroom.getRoundNum()*2<roundCounter)
+        if (gameroom.getRoundNum()*2  < roundCounter) {
+            SetEndGameDialog();
             return;
+        }
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
@@ -396,13 +398,21 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         if (winners!=null) {
             for (int i = 0; i < winners.size(); i++) {
                 if (winners.get(i).equals(DBAuth.getUserName()))
-                    dbGameRoom.UpdatePoints(winners.get(i), points);
+                    gameroom.updatePoint(points,winners.get(i));
+                    //dbGameRoom.UpdatePoints(winners.get(i), points);
                 points -= 25;
             }
             if (winners.size()>gameroom.getCounterOfPlayers()/2||winners==null)
-                dbGameRoom.UpdatePoints(gameroom.getNames().get(counter),150);
+                gameroom.updatePoint(150,gameroom.getNames().get(counter));
             else
-                dbGameRoom.UpdatePoints(gameroom.getNames().get(counter),50);
+                gameroom.updatePoint(50,gameroom.getNames().get(counter));
+            dbGameRoom.addGameRoom(gameroom,uidRef);
+        }
+        else
+        {
+           for (int i=0;i<gameroom.getCounterOfPlayers();i++)
+               gameroom.updatePoint(0,gameroom.getNames().get(i));
+            gameroom.updatePoint(50,gameroom.getNames().get(counter));
         }
     }
     public void SetDialog()
@@ -445,7 +455,22 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         Dialog dialog=new Dialog(this);
         dialog.setContentView(R.layout.end_game_dialog);
         dialog.setCancelable(false);
+        gameroom.orderListByPoints();
+        ArrayList<String> profiles=gameroom.getNames();
+        TextView t1=dialog.findViewById(R.id.firstPlace);
+        TextView t2=dialog.findViewById(R.id.secondPlace);
+        TextView t3=dialog.findViewById(R.id.thirdPlace);
+        t1.setText(profiles.get(0));
+        if (profiles.size()>=2)
+        {
+            t2.setVisibility(View.VISIBLE);
+            t2.setText(profiles.get(1));
+            if (profiles.size()>=3)
+            {
+                t3.setVisibility(View.VISIBLE);
+                t3.setText(profiles.get(2));
+            }
+        }
         dialog.show();
-
     }
 }

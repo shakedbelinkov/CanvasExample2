@@ -18,6 +18,7 @@ public class GameRoom {
     private int counterOfPlayers=0;//number of player now
     private ArrayList<String> uIDs;//list of UID
     private ArrayList<String> names;//list of names
+    private ArrayList<Integer> points;
     //add name array
     public GameRoom(int playerNum,int roundNum,int roundTime)
     {
@@ -26,6 +27,7 @@ public class GameRoom {
         this.roundTime=roundTime;
         this.uIDs=new ArrayList<>();
         this.names=new ArrayList<>();
+        this.points=new ArrayList<>();
     }
 
     public GameRoom() {
@@ -85,6 +87,7 @@ public class GameRoom {
         if (this.counterOfPlayers<playerNum) {
             this.uIDs.add(uId);
             this.names.add(name);
+            this.points.add(0);
             this.counterOfPlayers++;
             return true;
         }
@@ -101,6 +104,7 @@ public class GameRoom {
             return false;
         this.uIDs.remove(index);
         this.names.remove(index);
+        this.points.remove(index);
         this.counterOfPlayers--;
         return true;
     }
@@ -120,5 +124,35 @@ public class GameRoom {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public ArrayList<Integer> getPoints() {
+        return points;
+    }
+
+    public void setPoints(ArrayList<Integer> points) {
+        this.points = points;
+    }
+    public void updatePoint(int points,String name)
+    {
+        int index=0;
+        while (!name.equals(this.names.get(index)))
+            index++;
+        this.points.set(index,points);
+    }
+    public void orderListByPoints()
+    {
+        for (int i=0;i<this.points.size()-1;i++)
+        {
+            if (this.points.get(i+1)>this.points.get(i))
+            {
+                int p=this.points.get(i);
+                this.points.set(i,this.points.get(i+1));
+                this.points.set(i+1,p);
+                String name=this.names.get(i);
+                this.names.set(i,this.names.get(i+1));
+                this.names.set(i+1,name);
+            }
+        }
     }
 }

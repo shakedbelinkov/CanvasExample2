@@ -40,6 +40,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ArrayList<String> names;
     private int isHost;
+    private GameRoom gameRoom;
     ListView lv;
     ArrayAdapter<String> arrayAdapter;
     @Override
@@ -80,7 +81,7 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         numRounds=takeDetails.getIntExtra("numRounds",1);
         timeRounds=takeDetails.getIntExtra("timeRounds",20);
         String name=DBAuth.getUserName();
-        GameRoom gameRoom=new GameRoom(numPlayers,numRounds,timeRounds);
+        gameRoom=new GameRoom(numPlayers,numRounds,timeRounds);
         gameRoom.setPlayerNum(numPlayers);
         gameRoom.setRoundNum(numRounds);
         gameRoom.setRoundTime(timeRounds);
@@ -189,19 +190,22 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
         //when the host click on the start button
         //change the attribute "isStart"-true
         //move to the Activity-"MainActivity"
-        Intent intent = new Intent(WaitingRoom.this, MainActivity.class);
-        intent.putExtra("gameRoomCode", uidRef);
-        intent.putExtra("isHost", 1);//1-host
-
-        db.collection("GameRooms").document(uidRef).update("isStart", true).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    startActivity(intent);
-                    finish();
+        if (gameRoom.getCounterOfPlayers()!=0) {
+            Intent intent = new Intent(WaitingRoom.this, MainActivity.class);
+            intent.putExtra("gameRoomCode", uidRef);
+            intent.putExtra("isHost", 1);//1-host
+            db.collection("GameRooms").document(uidRef).update("isStart", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
-        });
+            });
+        }
+        else
+            Toast.makeText(this,"there no players",Toast.LENGTH_LONG).show();
     }
 
 }

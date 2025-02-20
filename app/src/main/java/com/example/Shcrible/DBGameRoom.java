@@ -12,6 +12,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.security.PublicKey;
+
 public class DBGameRoom {
 
 
@@ -46,7 +48,6 @@ public class DBGameRoom {
             }
         });
     }
-
 
     public void updateWord(String uidRef, String word) {
 
