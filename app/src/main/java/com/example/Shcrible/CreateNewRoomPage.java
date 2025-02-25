@@ -20,7 +20,7 @@ public class CreateNewRoomPage extends AppCompatActivity  {
      private Intent intent;
     Spinner spinnerPlayer,spinnerRounds,spinnerTime;
 
-    private int numPlayers=2,numRounds=1,time=30;
+    private int numPlayers=2,numRounds=1,time=20;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,15 @@ public class CreateNewRoomPage extends AppCompatActivity  {
 
     private void initUI() {
         //spinners have information for the game room
+        Intent takeDetails=getIntent();
+        int openAgain=takeDetails.getIntExtra("openAgain",2);
+        if (openAgain==1)
+        {
+            numPlayers=takeDetails.getIntExtra("numPlayers",2);
+            numRounds=takeDetails.getIntExtra("numRounds",1);
+            time=takeDetails.getIntExtra("timeRounds",20);
+            startNextActivity(findViewById(R.id.startButton));
+        }
         spinnerPlayer=findViewById(R.id.numOfPlayers);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.numberOfPlayer,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

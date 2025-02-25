@@ -42,7 +42,14 @@ public class GameLobby extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game_lobby);
-
+        Intent takeDetails=getIntent();
+        int keepPlaying=takeDetails.getIntExtra("playAgain",2);
+        //1-keep playing,2-came from LogIn.class/OpeningPage.class
+        if (keepPlaying==1)
+        {
+            String uidRef=takeDetails.getStringExtra("uidRef");
+            connectToTheGameRoom(uidRef);
+        }
 
         name = DBAuth.getUserName();
         textView=findViewById(R.id.playerName);

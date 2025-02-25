@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private Word word = new Word();
     private ListenerRegistration lr, wordListener;
     private int typePlayer=1;
+    private CountDownTimer countDownTimer;
 
 
     @Override
@@ -137,13 +138,14 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             typePlayer=1;
             myCanvasView.ChangePlayerType(typePlayer);
             //if it your turn start countDownTimer, every five seconds it update
-            new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
+            countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
                     ArrayList<Draw> arr =myCanvasView.getArrayList();
                     if ( arr== null || arr.size() == 0)
                         return;
                     dbDraw.addDraw(arr);
+                    Log.d("addDrawCheck", "add draw");
                 }
 
                 public void onFinish() {
@@ -154,10 +156,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         else
                             counter++;
                         roundCounter++;
-                        dbDraw.removeDraw();
+                        //dbDraw.removeDraw();
                         setPoint();
                         myCanvasView.delete();
                         SetDialog();
+                        countDownTimer.cancel();
                     }
                 }
             }.start();
@@ -175,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             myCanvasView.ChangePlayerType(typePlayer);
             listenForWord();
             listenForDraws(uidRef);
-            new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
+            Log.d("SHCRIBLE", "LR STARTED!");
+            countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
                 public void onTick(long millisUntilFinished) {
                 }
 
@@ -187,11 +191,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             counter++;
                         roundCounter++;
                         lr.remove();
-                        Log.d("DEBUG", "onFinish: LR REMOVED!!");
                         wordListener.remove();
                         setPoint();
                         myCanvasView.delete();
                         SetDialog();
+                        countDownTimer.cancel();
                     }
                 }
             }.start();
@@ -223,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     @Override
     public void onDrawComplete(boolean s) {
-        Toast.makeText(this, "Draw " + s, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Draw " + s, Toast.LENGTH_SHORT).show();
     }
 
     public void listenForDraws(String uidRef)
@@ -460,6 +464,39 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView t1=dialog.findViewById(R.id.firstPlace);
         TextView t2=dialog.findViewById(R.id.secondPlace);
         TextView t3=dialog.findViewById(R.id.thirdPlace);
+        Button stopPlayButton=dialog.findViewById(R.id.stopPlayButton);
+        Button keepPlayButton=dialog.findViewById(R.id.keepPlayButton);
+        stopPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,GameLobby.class);
+                startActivity(intent);
+            }
+        });
+        keepPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (uidRef.equals(DBAuth.getUserUID()))
+                {
+                    Intent intent=new Intent(MainActivity.this,CreateNewRoomPage.class);
+                    intent.putExtra("numPlayers",gameroom.getPlayerNum());
+                    intent.putExtra("numRounds",gameroom.getRoundNum());
+                    intent.putExtra("timeRounds",gameroom.getRoundTime());
+                    //1-yes,2-no
+                    intent.putExtra("openAgain",1);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent=new Intent(MainActivity.this,GameLobby.class);
+                    //1-yes,2-no
+                    intent.putExtra("playAgain",1);
+                    intent.putExtra("uidRef",uidRef);
+                    //intent.putExtra("isHost",2);
+                    startActivity(intent);
+                }
+            }
+        });
         t1.setText(profiles.get(0));
         if (profiles.size()>=2)
         {
