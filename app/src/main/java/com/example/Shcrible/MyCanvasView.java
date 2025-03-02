@@ -200,7 +200,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         ArrayList<Draw> a = getArrayList();
         if (a== null || a.size() == 0)
             return;
-        db.addDraw(a);
+        //db.addDraw(a);
 
         //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
 
