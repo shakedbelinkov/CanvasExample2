@@ -92,13 +92,16 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
 
     public void changeBackgroundColor(int color)
     {
+        //change the background color to "color"
         mExtraCanvas = new Canvas(mExtraBitmap);
         mExtraCanvas.drawColor(color);
         invalidate();
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        //this action gets event and analyze them if you are the one who draw
         if (typePlayer==1) {
+            //if you are the one who drawing
             float x = event.getX();
             float y = event.getY();
             switch (event.getAction()) {
@@ -125,25 +128,33 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
 
     public void drawFromDB(Draw[] draws)
     {
+        //if "draw" is empty
         if(draws==null)
             return;
         for (int i=0;i<draws.length;i++)
         {
+            //change the brush's color and size
             changeBrushColor(draws[i].getColor());
             changeBrushSize(draws[i].getBrushSize());
+            Log.d("changecolor", "drawFromDB: "+mDrawColor);
             if (i==0&& draws[i].getType()!=Consts.START_DRAW)//check the first one if it the continue of the last arr
             {
                 if (draws[i].getType()==Consts.DELETE_ALL)
                     delete();
                 else
+                    //if he isn't the delete the draw, the action will start the drawing (to maintain synchronization)
                     touchStart(draws[i].getInitialX(),draws[i].getInitialY(),2);
             }
+            //if you start drawing
             if (draws[i].getType()==Consts.START_DRAW)
                 touchStart(draws[i].getInitialX(),draws[i].getInitialY(),2);
+            //if you continue drawing
            if (draws[i].getType()==Consts.MOVE_DRAW)
             touchMove(draws[i].getInitialX(),draws[i].getInitialY(),2);
+           //if you end drawing
            if (draws[i].getType()==Consts.END_DRAW)
                 touchUp(2);
+           //if you want to delete all the the drawing
             if (draws[i].getType()==Consts.DELETE_ALL)
                 delete();
            else if (i==draws.length-1)//if the last draw isn't end draw
@@ -151,6 +162,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
                if (draws[i].getType()==Consts.DELETE_ALL)
                    delete();
                else
+                   //if he isn't the delete the draw, the action will end the drawing (to maintain synchronization)
                    touchUp(2);
            }
         }
@@ -161,13 +173,14 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
-        if (type==1) {
+        if (type==1) {//if you are the one who drawing
+            //create new draw
             Draw d = new Draw(x, y, 0, 0, Consts.START_DRAW, mDrawColor, brushSize);
             updateCounter++;
             draws.add(d);
             Log.d("DRAWS", draws.toString());
         }
-
+        Log.d("changecolor", "drawFromDB: "+mDrawColor);
     }
 
 
@@ -177,12 +190,14 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+            //continue the dra to this point
             mPath.quadTo(mX, mY, (x + mX)/2, (y + mY)/2);
+            //create new draw
             Draw d=new Draw(mX,mY,(x + mX)/2,(y + mY)/2,Consts.MOVE_DRAW,mDrawColor,brushSize);
             mX = x;
             mY = y;
             mExtraCanvas.drawPath(mPath, mPaint);
-            if (type==1) {
+            if (type==1) {//if you are the one who drawing
                 draws.add(d);
                 Log.d("DRAWS", draws.toString());
                 updateCounter++;
@@ -190,8 +205,9 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         }
     }
     private void touchUp(int type) {
+        //create new draw
         Draw d=new Draw(0,0,0,0,Consts.END_DRAW,mDrawColor,brushSize);
-        if (type==1) {
+        if (type==1) {//if you are the one who drawing
             updateCounter++;
             draws.add(d);
             Log.d("DRAWS", draws.toString());
@@ -200,10 +216,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         ArrayList<Draw> a = getArrayList();
         if (a== null || a.size() == 0)
             return;
-        //db.addDraw(a);
-
-        //db.addDraw((ArrayList<Draw>) draws.subList(lastUpdate,updateCounter),uidRef);
-
+        db.addDraw(a);
         mPath.reset();
     }
     public void changeBrushColor(int color)
@@ -239,6 +252,7 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     }
     public ArrayList<Draw>getArrayList()
     {
+        //take the new updates from "draws"
         ArrayList<Draw> arrToDB = new ArrayList<Draw> (draws.subList(lastUpdate,updateCounter)) ;
         lastUpdate = updateCounter;
         return arrToDB;

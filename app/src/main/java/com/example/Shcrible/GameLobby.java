@@ -65,7 +65,6 @@ public class GameLobby extends AppCompatActivity {
         //move activity=> CreateNewRoomPage
         Intent intent=new Intent(GameLobby.this, CreateNewRoomPage.class);
         startActivity(intent);
-        finish();
     }
 
     public void createDialog(View view) {
@@ -117,7 +116,6 @@ public class GameLobby extends AppCompatActivity {
                                             intent.putExtra("gameRoomCode",code);
                                             intent.putExtra("isHost",2);
                                             startActivity(intent);
-                                            finish();
                                         }
                                         else
                                             Log.d("GAME ROOM ", "onComplete: added player name FAIL");

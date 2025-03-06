@@ -27,6 +27,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/color2" />
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="110dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/color3" />
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="312dp"
+        android:layout_height="629dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginBottom="180dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/color4" />
 
     <TextView
         android:id="@+id/playerName"
@@ -40,15 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="110dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/color3" />
+
 
     <Button
         android:id="@+id/CreateRoomButton"
@@ -88,16 +98,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/shcrible_logo" />
 
-
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="312dp"
-        android:layout_height="629dp"
-        android:layout_marginStart="156dp"
-        android:layout_marginBottom="180dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/color4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
