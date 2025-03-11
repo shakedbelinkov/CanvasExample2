@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
+            draws.clear();
             word.ChooseWord();
             textView.setText(word.getWord());
             gameroom.setWord(word.getWord());
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             typePlayer=1;
             myCanvasView.ChangePlayerType(typePlayer);
             //if it your turn start countDownTimer, every five seconds it update
+            // Van Gogh
             countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -139,8 +142,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
 
                 public void onFinish() {
+                    // if( game is not over- there are still rounds to play
+
                     if (turn <= gameroom.getRoundNum()) {
-                        dbDraw.addDraw(myCanvasView.getArrayList());
+                    //    dbDraw.addDraw(myCanvasView.getArrayList());   //???
+
                         if (counter == gameroom.getCounterOfPlayers() - 1)
                             counter = 0;
                         else
@@ -149,13 +155,16 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         dbDraw.removeDraw();
                         setPoint();
                         myCanvasView.delete();
+                 //       countDownTimer.cancel();
+                        draws.clear();
                         SetDialog();
-                        countDownTimer.cancel();
                     }
                 }
             }.start();
 
-        } else {
+        }
+        // Wannabe Van Gogh
+        else {
             ConstraintLayout cl = findViewById(R.id.innerLayout);
             cl.setVisibility(View.INVISIBLE);
             RecyclerView listView = findViewById(R.id.listview_chat);
@@ -184,8 +193,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         wordListener.remove();
                         setPoint();
                         myCanvasView.delete();
+                        draws.clear();
                         SetDialog();
-                        countDownTimer.cancel();
+                      //  countDownTimer.cancel();
+                        Log.d("GAME_TROUBLE ","player end round " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
+
+
                     }
                 }
             }.start();
@@ -236,6 +249,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
 
                 Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " + arr.length);
+                Log.d("GAME_TROUBLE","player " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
+                if(typePlayer==1)
+
+                    Toast.makeText(MainActivity.this,"GAME_TROUBLE " + DBAuth.getUserName(),Toast.LENGTH_SHORT ).show();
                 myCanvasView.drawFromDB(arr);
 
             }
@@ -289,7 +306,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-
+                                        lr.remove();
+                                        wordListener.remove();
                                         Intent intent=new Intent(MainActivity.this,GameLobby.class);
                                         startActivity(intent);
 
