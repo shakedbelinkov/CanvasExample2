@@ -130,7 +130,78 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             typePlayer=1;
             myCanvasView.ChangePlayerType(typePlayer);
             //if it your turn start countDownTimer, every five seconds it update
+            // Allon testing :-)
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i <gameroom.getRoundTime()/2; i++) {
+
+
+
+                        try {
+
+
+                            int finalI = i;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ArrayList<Draw> arr = myCanvasView.getArrayList();
+                                    if (arr == null || arr.size() == 0)
+                                        return;
+                                    dbDraw.addDraw(arr);
+                                    Log.d("addDrawCheck", "add draw " + finalI);
+                                }
+                            });
+
+                            Thread.sleep(2000);
+
+
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d("THREAD EXCEPTION! ", "run: " + e.getMessage());
+                        }
+
+
+                    }
+
+                    Log.d("Testing sys clock", "LOOP ENDED");
+
+                    // FINISHED THE GAME
+                    // NEED TO ACCESS DISPLAY- RUN ON UI
+
+                    // takes the code from the thread and moves it to the Activity (UITHread)
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Atlast some caffeine
+                            if (turn <= gameroom.getRoundNum()) {
+                                //    dbDraw.addDraw(myCanvasView.getArrayList());   //???
+
+                                if (counter == gameroom.getCounterOfPlayers() - 1)
+                                    counter = 0;
+                                else
+                                    counter++;
+                                roundCounter++;
+                                dbDraw.removeDraw();
+                                setPoint();
+                                myCanvasView.delete();
+                                //       countDownTimer.cancel();
+                                draws.clear();
+                                SetDialog();
+
+                            }
+                        }
+                    });
+
+
+                }
+            }).start();
+
             // Van Gogh
+            /*
+
             countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -162,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
             }.start();
 
+             */
+
         }
         // Wannabe Van Gogh
         else {
@@ -176,8 +249,44 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             typePlayer=2;
             myCanvasView.ChangePlayerType(typePlayer);
             listenForWord();
-            listenForDraws(uidRef);
+        //    listenForDraws(uidRef);
             Log.d("SHCRIBLE", "LR STARTED!");
+
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SystemClock.sleep(gameroom.getRoundTime()*1000);
+                    // FINISHED THE GAME
+                    // NEED TO ACCESS DISPLAY- RUN ON UI
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (turn <= gameroom.getRoundNum()) {
+                                if (counter == gameroom.getCounterOfPlayers() - 1)
+                                    counter = 0;
+                                else
+                                    counter++;
+                                roundCounter++;
+                                lr.remove();
+                                wordListener.remove();
+                                setPoint();
+                                myCanvasView.delete();
+                                draws.clear();
+                                SetDialog();
+                                //  countDownTimer.cancel();
+                                Log.d("GAME_TROUBLE ", "player end round " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
+
+                            }
+                        }
+                    });
+
+
+
+                }
+            }).start();
+/*
             countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
                 public void onTick(long millisUntilFinished) {
                 }
@@ -202,6 +311,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     }
                 }
             }.start();
+
+ */
         }
     }
 
@@ -395,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     word.setWord(gm.getWord());
                     TextView textView = findViewById(R.id.word);
                     textView.setText(word.Clue());
+                    listenForDraws(uidRef);
                 }
             }
         });
