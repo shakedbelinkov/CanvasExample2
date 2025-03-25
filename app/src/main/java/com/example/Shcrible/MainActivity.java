@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private ListenerRegistration lr, wordListener;
     private int typePlayer=1;
     private CountDownTimer countDownTimer;
+    private Dialog dialog;
 
 
     @Override
@@ -277,13 +278,9 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                                 SetDialog();
                                 //  countDownTimer.cancel();
                                 Log.d("GAME_TROUBLE ", "player end round " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
-
                             }
                         }
                     });
-
-
-
                 }
             }).start();
 /*
@@ -541,12 +538,30 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
     public void SetDialog()
     {
-        Dialog dialog=new Dialog(this);
+        dbGameRoom.updateStartRound(uidRef,false);
+        dialog=new Dialog(this);
         dialog.setContentView(R.layout.end_round_dialog);
         TextView txWord=dialog.findViewById(R.id.theWordIs);
         txWord.setText(word.getWord());
         TextView txWinner=dialog.findViewById(R.id.winner);
         TextView txPoints=dialog.findViewById(R.id.points);
+        Button b=dialog.findViewById(R.id.startRound);
+        if (typePlayer==1) {
+            b.setVisibility(View.VISIBLE);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dbGameRoom.updateStartRound(uidRef, true);
+                    dialog.dismiss();
+                    startTurn();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.INVISIBLE);
+            listenForStartRound();
+        }
         if (winners!=null){
             txWinner.setText(gameroom.getNames().get(counter));
             txPoints.setText("+150");
@@ -560,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         winners.clear();
 
 
-        new CountDownTimer(3000,1000)
+        /*new CountDownTimer(3000,1000)
         {
             @Override
             public void onTick(long l) {
@@ -572,8 +587,28 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 dialog.dismiss();
                 startTurn();
             }
-        }.start();
+        }.start();*/
     }
+
+    public void listenForStartRound()
+    {
+        db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Log.d("listenForStartRound", "onEvent: ");
+                if (value.exists())
+                {
+                    GameRoom gameRoom=value.toObject(GameRoom.class);
+                    if (gameRoom.getIsRoundStart()) {
+                        dialog.dismiss();
+                        dbGameRoom.updateStartRound(uidRef,false);
+                        startTurn();
+                    }
+                }
+            }
+        });
+    }
+
     public void SetEndGameDialog()
     {
         Dialog dialog=new Dialog(this);
@@ -589,7 +624,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         stopPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,GameLobby.class);
+                Intent intent = new Intent(MainActivity.this, GameLobby.class);
                 startActivity(intent);
             }
         });

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="390dp"
-    android:background="#f0b88d">
+    android:background="#f0b88d"
+    android:onClick="startRound">
 
     <ImageView
         android:id="@+id/imageView5"
@@ -83,4 +84,18 @@
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/winner"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+    <Button
+        android:id="@+id/startRound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#54704E"
+        android:onClick="startRound"
+        android:text="Start Turn"
+        android:textColorLink="#673AB7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/winner" />
 </androidx.constraintlayout.widget.ConstraintLayout>

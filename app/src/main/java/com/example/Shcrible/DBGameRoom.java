@@ -58,6 +58,15 @@ public class DBGameRoom {
             }
         });
     }
+    public void updateStartRound(String uidRef,boolean isStartRound)
+    {
+        db.collection("GameRooms").document(uidRef).update("isRoundStart",isStartRound).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("updateStartRound", "is the round start"+isStartRound);
+            }
+        });
+    }
 
 
 }

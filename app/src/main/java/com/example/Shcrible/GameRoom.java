@@ -12,6 +12,7 @@ public class GameRoom {
     private int counter=0;
     private boolean isStart=false;
     private String word="";
+    private boolean isRoundStart=false;
 
 
 
@@ -154,5 +155,14 @@ public class GameRoom {
                 this.names.set(i+1,name);
             }
         }
+    }
+
+
+    public boolean getIsRoundStart() {
+        return isRoundStart;
+    }
+
+    public void setRoundStart(boolean roundStart) {
+        isRoundStart = roundStart;
     }
 }
