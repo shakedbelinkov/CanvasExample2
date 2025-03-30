@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -58,10 +59,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private int second;//second dor timer
     private int turn = 1;
     private Word word = new Word();
-    private ListenerRegistration lr, wordListener;
+    private ListenerRegistration lr, wordListener,startListener;
     private int typePlayer=1;
     private CountDownTimer countDownTimer;
     private Dialog dialog;
+    private boolean isWin=false;
 
 
     @Override
@@ -92,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 if (task.isSuccessful()) {
                     gameroom = task.getResult().toObject(GameRoom.class);
                     uIDs = gameroom.getUIDs();
+                    //clean all the messages
+                    dbGameRoom.cleanChat(uidRef);
                     startTurn();
                 }
             }
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     {
         //choose whose turn is it
         String name = whoseTurn();
+        isWin=false;
         TextView textView = findViewById(R.id.word);
         second = gameroom.getRoundTime();
         Timer();
@@ -114,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         if ((DBAuth.getUserUID().equals(name)))
         //check whose turn is it
         {
+            if (startListener!=null)
+                startListener.remove();
             draws.clear();
             word.ChooseWord();
             textView.setText(word.getWord());
@@ -350,19 +357,19 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (!value.exists() || value.getData() == null)
                     return;
-                Draw[] arr = new Draw[1];
-                arr = TreeMapToDraw(value.getData());
-                if (arr == null)
-                    return;
-                //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
+                if (typePlayer==2) {
+                    Draw[] arr = new Draw[1];
+                    arr = TreeMapToDraw(value.getData());
+                    if (arr == null)
+                        return;
+                    //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
 
-                Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " + arr.length);
-                Log.d("GAME_TROUBLE","player " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
-                if(typePlayer==1)
-
-                    Toast.makeText(MainActivity.this,"GAME_TROUBLE " + DBAuth.getUserName(),Toast.LENGTH_SHORT ).show();
-                myCanvasView.drawFromDB(arr);
-
+                    Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " + arr.length);
+                    Log.d("GAME_TROUBLE", "player " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
+                    if (typePlayer == 1)
+                        Toast.makeText(MainActivity.this, "GAME_TROUBLE " + DBAuth.getUserName(), Toast.LENGTH_SHORT).show();
+                    myCanvasView.drawFromDB(arr);
+                }
             }
         });
     }
@@ -428,35 +435,45 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         });
     }
-
+    //Set the recycleView of the chat
     public void setRecyclerView() {
-        //Query query = msgRef.orderBy("timestamp", Query.Direction.DESCENDING);
+        //all the messages will organize by date
+        Query query = msgRef.orderBy("date", Query.Direction.ASCENDING);
         lv = findViewById(R.id.listview_chat);
         lv.setHasFixedSize(true);
         lv.setLayoutManager(new LinearLayoutManager(this));
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
-                .setQuery(msgRef, Message.class)
+                .setQuery(query, Message.class)
                 .build();
         messageAdapter = new MessageAdapter(options);
         lv.setAdapter(messageAdapter);
     }
 
     public String whoseTurn() {
+        //check whose turn is it, and return his id
         if (counter == uidRef.length())
             counter = 0;
         return uIDs.get(counter);
     }
 
     public void SendMessage(View view) {
+        //when someone click sent , the function take his text and add her to the firebase
+        //take the text
+
         EditText message = findViewById(R.id.messageBox);
         String messageText = message.getText().toString();
         message.setText("");
-        Message msg = new Message(DBAuth.getUserName(), messageText);
-        if (word.isRight(messageText)) {
-            msg.setRight(true);
-            winners.add(DBAuth.getUserName());
+        if (!isWin) {
+            Message msg = new Message(DBAuth.getUserName(), messageText);
+            //check if it the right answer
+            if (word.isRight(messageText)) {
+                msg.setRight(true);
+                winners.add(DBAuth.getUserName());
+                isWin = true;
+            }
+            //add to firebase
+            dbMessage.addMessage(msg, uidRef);
         }
-        dbMessage.addMessage(msg, uidRef);
     }
 
     @Override
@@ -546,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView txWinner=dialog.findViewById(R.id.winner);
         TextView txPoints=dialog.findViewById(R.id.points);
         Button b=dialog.findViewById(R.id.startRound);
-        if (typePlayer==1) {
+        if (DBAuth.getUserUID().equals(uidRef)) {
             b.setVisibility(View.VISIBLE);
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -592,7 +609,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     public void listenForStartRound()
     {
-        db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        startListener=db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 Log.d("listenForStartRound", "onEvent: ");

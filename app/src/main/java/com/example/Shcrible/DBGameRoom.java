@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.security.PublicKey;
 
@@ -59,11 +60,35 @@ public class DBGameRoom {
         });
     }
     public void updateStartRound(String uidRef,boolean isStartRound)
+            //update the game start
     {
         db.collection("GameRooms").document(uidRef).update("isRoundStart",isStartRound).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("updateStartRound", "is the round start"+isStartRound);
+            }
+        });
+    }
+    public void cleanChat(String uidRef)
+    {
+        //clean the chat
+        db.collection("GameRooms").document(uidRef).collection("Message").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    QuerySnapshot snapshots=task.getResult();
+                    //go over all the document and delete them
+                    for (DocumentSnapshot document:snapshots)
+                    {
+                        document.getReference().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("document delete", "the task "+task.isSuccessful());
+                            }
+                        });
+                    }
+                }
             }
         });
     }
