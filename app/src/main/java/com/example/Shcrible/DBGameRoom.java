@@ -39,7 +39,7 @@ public class DBGameRoom {
             }
         });
     }
-    public void UpdatePoints(String uidRef,int point)
+    /*public void UpdatePoints(String uidRef,int point)
     {
         db.collection("profiles").document(uidRef).update("points",point).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -48,7 +48,7 @@ public class DBGameRoom {
                     addGameRoomComplete.onGameRoomComplete(task.isSuccessful());
             }
         });
-    }
+    }*/
 
     public void updateWord(String uidRef, String word) {
 

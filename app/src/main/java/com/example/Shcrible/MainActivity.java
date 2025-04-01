@@ -40,18 +40,19 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete {
+public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete,DBUser.AddUserComplete {
 
     private MyCanvasView myCanvasView;
     public static String uidRef="", answer;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw;
     private DBMessage dbMessage;
+    private DBUser dbUser;
     private DBGameRoom dbGameRoom;
     private GameRoom gameroom;
     private ArrayList<String> uIDs,winners = new ArrayList<>();
     private ArrayList<Draw> draws = new ArrayList<>();
-    private int counter = 0,roundCounter=1;//count whose turn is it
+    private int counter = -1,roundCounter=1;//count whose turn is it
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         dbMessage = new DBMessage(this);
         dbDraw = new DBDraw(this);
         dbGameRoom = new DBGameRoom(this);
+        dbUser=new DBUser(this);
         myCanvasView = findViewById(R.id.canvas01);
         Intent takeDetails = getIntent();
         uidRef = takeDetails.getStringExtra("gameRoomCode");
@@ -105,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void startTurn()
     //start new turn
     {
+        if (counter == gameroom.getCounterOfPlayers() - 1)
+            counter = 0;
+        else
+            counter++;
+        roundCounter++;
         //choose whose turn is it
         String name = whoseTurn();
         isWin=false;
@@ -186,12 +193,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                             // Atlast some caffeine
                             if (turn <= gameroom.getRoundNum()) {
                                 //    dbDraw.addDraw(myCanvasView.getArrayList());   //???
-
-                                if (counter == gameroom.getCounterOfPlayers() - 1)
-                                    counter = 0;
-                                else
-                                    counter++;
-                                roundCounter++;
                                 dbDraw.removeDraw();
                                 setPoint();
                                 myCanvasView.delete();
@@ -272,11 +273,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         @Override
                         public void run() {
                             if (turn <= gameroom.getRoundNum()) {
-                                if (counter == gameroom.getCounterOfPlayers() - 1)
-                                    counter = 0;
-                                else
-                                    counter++;
-                                roundCounter++;
                                 lr.remove();
                                 wordListener.remove();
                                 setPoint();
@@ -533,27 +529,46 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     {
 
         int points=150;
+        //if someone win this round
         if (winners!=null) {
+            //go over all the winners list and give them point from first to last winner
             for (int i = 0; i < winners.size(); i++) {
-                if (winners.get(i).equals(DBAuth.getUserName()))
-                    gameroom.updatePoint(points,winners.get(i));
-                    //dbGameRoom.UpdatePoints(winners.get(i), points);
+                //if
+                if (winners.get(i).equals(DBAuth.getUserName())) {
+                    //update locally the points
+                    gameroom.updatePoint(points, winners.get(i));
+                    //add points for general scoring
+                    dbUser.setPoint(points);
+                }
                 points -= 25;
             }
-            if (winners.size()>gameroom.getCounterOfPlayers()/2||winners==null)
-                gameroom.updatePoint(150,gameroom.getNames().get(counter));
-            else
-                gameroom.updatePoint(50,gameroom.getNames().get(counter));
+            //if it's the artist
+            if (DBAuth.getUserName().equals(gameroom.getNames().get(counter))) {
+                //if most of the players guess the word= good painting= extra points
+                if (winners.size() > gameroom.getCounterOfPlayers() / 2 || winners == null) {
+                    gameroom.updatePoint(125, gameroom.getNames().get(counter));
+                    dbUser.setPoint(150);
+                } else {
+                    gameroom.updatePoint(50, gameroom.getNames().get(counter));
+                    dbUser.setPoint(50);
+                }
+            }
             dbGameRoom.addGameRoom(gameroom,uidRef);
         }
         else
         {
+            //if no one guess the word=> everyone get zero points
            for (int i=0;i<gameroom.getCounterOfPlayers();i++)
                gameroom.updatePoint(0,gameroom.getNames().get(i));
-            gameroom.updatePoint(50,gameroom.getNames().get(counter));
+           //except the artist, he get 50 points
+            if(DBAuth.getUserName().equals(gameroom.getNames().get(counter))) {
+                gameroom.updatePoint(50, gameroom.getNames().get(counter));
+                dbUser.setPoint(50);
+            }
         }
     }
     public void SetDialog()
+            // set dialog of end round
     {
         dbGameRoom.updateStartRound(uidRef,false);
         dialog=new Dialog(this);
@@ -563,25 +578,30 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView txWinner=dialog.findViewById(R.id.winner);
         TextView txPoints=dialog.findViewById(R.id.points);
         Button b=dialog.findViewById(R.id.startRound);
+        //this button oly visible for the host- start new round button
         if (DBAuth.getUserUID().equals(uidRef)) {
             b.setVisibility(View.VISIBLE);
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //if the round start update everyone
                     dbGameRoom.updateStartRound(uidRef, true);
+                    //close the dialog and start new turn
                     dialog.dismiss();
                     startTurn();
                 }
             });
         }
         else
+        //if we aren't the host, we don't see the button and start listen for the status of the game
         {
             b.setVisibility(View.INVISIBLE);
             listenForStartRound();
         }
+        //if no one win
         if (winners!=null){
             txWinner.setText(gameroom.getNames().get(counter));
-            txPoints.setText("+150");
+            txPoints.setText("+125");
         }
         else {
             txWinner.setText(winners.get(0));
@@ -681,5 +701,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             }
         }
         dialog.show();
+    }
+
+    @Override
+    public void onUserComplete(boolean s) {
+
     }
 }

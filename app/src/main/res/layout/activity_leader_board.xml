@@ -7,4 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".LeaderBoard">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/leaderboardList"
+        android:layout_width="349dp"
+        android:layout_height="566dp"
+        android:background="#F1ECEC"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="73dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
