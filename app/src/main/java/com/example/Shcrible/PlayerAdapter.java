@@ -30,10 +30,12 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
 
         TextView tvName = (TextView)view.findViewById(R.id.playerName);
         TextView tvPoints = (TextView)view.findViewById(R.id.points);
+        TextView tvPlace=(TextView)view.findViewById(R.id.place);
         Player temp = objects.get(position);
 
-        tvName.setText(String.valueOf(temp.getName()));
+        tvName.setText(temp.getName());
         tvPoints.setText(temp.getPoints());
+        tvPlace.setText(temp.getPlace());
 
         return view;
     }

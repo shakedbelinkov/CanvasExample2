@@ -4,10 +4,11 @@ public class Player {
     private String name;
     private int points;
     private int place;
-    public Player(String name,int points)
+    public Player(String name,int points,int place)
     {
         this.name=name;
         this.points=points;
+        this.place=place;
     }
 
     public Player(){}

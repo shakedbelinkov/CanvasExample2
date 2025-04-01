@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -12,14 +13,20 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firestore.v1.StructuredQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderBoard extends AppCompatActivity {
     private ListView listView;
-    private ArrayAdapter<Player> player;
+    private ArrayList<Player> players;
     private PlayerAdapter playerAdapter;
     private CollectionReference playerRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -39,13 +46,25 @@ public class LeaderBoard extends AppCompatActivity {
     {
         playerRef=db.collection("profiles");
         Query query= playerRef.orderBy("points", Query.Direction.ASCENDING);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    List<Profile> profiles=task.getResult().toObjects(Profile.class);
+                    int size=10;
+                    if (profiles.size()<10)
+                        size=profiles.size();
+                    for (int i=0;i<=size;i++)
+                    {
+                        Player player=new Player(profiles.get(i).getName(),profiles.get(i).getPoints(),i);
+                        players.add(player);
+                    }
+                }
+            }
+        });
         listView = findViewById(R.id.leaderboardList);
-        //listView.setHasFixedSize(true);
-        //listView.setLayoutManager(new LinearLayoutManager(this));
-        FirestoreRecyclerOptions<Player> options = new FirestoreRecyclerOptions.Builder<Player>()
-                .setQuery(query,Player.class)
-                .build();
-        playerAdapter = new PlayerAdapter(options);
+        playerAdapter=new PlayerAdapter(this,0,0,players);
         listView.setAdapter(playerAdapter);
     }
 }

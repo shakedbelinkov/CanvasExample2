@@ -131,4 +131,9 @@ public class GameLobby extends AppCompatActivity {
         });
 
     }
+
+    public void moveToLeaderboardPage(View view) {
+        Intent intent=new Intent(GameLobby.this,LeaderBoard.class);
+        startActivity(intent);
+    }
 }
