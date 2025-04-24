@@ -5,16 +5,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f0b88d"
     tools:context=".LeaderBoard">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:id="@+id/leaderboardList"
-        android:layout_width="349dp"
-        android:layout_height="566dp"
-        android:background="#F1ECEC"
-        tools:layout_editor_absoluteX="31dp"
-        tools:layout_editor_absoluteY="73dp">
+        android:layout_width="322dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="124dp"
+        android:layout_marginEnd="44dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="LEADER BOARD"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

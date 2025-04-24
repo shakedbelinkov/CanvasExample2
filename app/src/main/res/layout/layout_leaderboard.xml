@@ -7,15 +7,17 @@
     android:background="#f0b88d">
 
     <TextView
-        android:id="@+id/playerName"
+        android:id="@+id/playerNameLB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="42dp"
         android:text="name"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/points"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toEndOf="@+id/colorLB"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -23,13 +25,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="186dp"
+        android:layout_marginEnd="60dp"
         android:text="points"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/colorLB"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginTop="16dp"
@@ -40,13 +42,12 @@
         app:srcCompat="@drawable/color" />
 
     <TextView
-        android:id="@+id/place"
+        android:id="@+id/placeLB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="335dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="40dp"
         android:text="1"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

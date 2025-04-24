@@ -9,12 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerAdapter extends ArrayAdapter<Player> {
     Context context;
-    List<Player> objects;
-    public PlayerAdapter(Context context, int resource, int textViewResourceId, List<Player> objects) {
+    ArrayList<Player> objects;
+    public PlayerAdapter(Context context, int resource, int textViewResourceId, ArrayList<Player> objects) {
         super(context, resource, textViewResourceId, objects);
 
         this.context=context;
@@ -28,14 +29,22 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.layout_leaderboard,parent,false);
 
-        TextView tvName = (TextView)view.findViewById(R.id.playerName);
+        TextView tvNames = (TextView)view.findViewById(R.id.playerNameLB);
         TextView tvPoints = (TextView)view.findViewById(R.id.points);
-        TextView tvPlace=(TextView)view.findViewById(R.id.place);
+        TextView tvPlace=(TextView)view.findViewById(R.id.placeLB);
+        ImageView imageView=(ImageView)view.findViewById(R.id.colorLB);
         Player temp = objects.get(position);
-
-        tvName.setText(temp.getName());
-        tvPoints.setText(temp.getPoints());
-        tvPlace.setText(temp.getPlace());
+        int place=temp.getPlace();
+        tvNames.setText(String.valueOf(temp.getName()));
+        tvPoints.setText(String.valueOf(temp.getPoints()));
+        tvPlace.setText(String.valueOf(temp.getPlace()));
+        if (place==1)
+            imageView.setImageResource(R.drawable.color3);
+        else if (place==2) {
+            imageView.setImageResource(R.drawable.color2);
+        }
+        else if(place==3)
+            imageView.setImageResource(R.drawable.color4);
 
         return view;
     }
