@@ -32,11 +32,13 @@ public class DBAuth {
     }
 
     public boolean isUserSigned()
+            //check if the
     {
         return mAuth.getCurrentUser()!=null;
     }
 
     public static String getUserName()
+            //get the user name
     {
         return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
     }
@@ -44,6 +46,7 @@ public class DBAuth {
 
     public void updateUserName(String userName)
     {
+        //change the username to "username" on firebase
         UserProfileChangeRequest request  = new UserProfileChangeRequest.Builder().
         setDisplayName(userName).
         build();

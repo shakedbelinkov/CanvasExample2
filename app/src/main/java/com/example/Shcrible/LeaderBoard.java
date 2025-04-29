@@ -44,21 +44,11 @@ public class LeaderBoard extends AppCompatActivity implements DBUser.LeaderBoard
     {
         dbUser=new DBUser(this);
         dbUser.getUserLeaderBoard();
-        /*playerRef=db.collection("profiles");
-        Query query= playerRef.orderBy("points", Query.Direction.ASCENDING);
-        listView = findViewById(R.id.leaderboardList);
-        //listView.setHasFixedSize(true);
-        //listView.setLayoutManager(new LinearLayoutManager(this));
-        FirestoreRecyclerOptions<Player> options = new FirestoreRecyclerOptions.Builder<Player>()
-                .setQuery(query,Player.class)
-                .build();
-        playerAdapter = new PlayerAdapter(this,options);
-        listView.setAdapter(playerAdapter);*/
-
     }
 
     @Override
     public void onLeaderBoardComplete(List<Profile> arr) {
+        //when i the top ten player i show them on the list view
         listView = findViewById(R.id.leaderboardList);
         ArrayList<Player> players=new ArrayList<>();
         for (int i=0;i<arr.size();i++)

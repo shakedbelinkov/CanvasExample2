@@ -96,8 +96,6 @@ public class Draw implements Serializable {
         map.put("brushSize",brushSize);
         return map;
     }
-
-
     public void hashmapToDraw(Map<String,Object> map)
     {
         // map to draw attributes
@@ -111,8 +109,6 @@ public class Draw implements Serializable {
         this.brushSize=(int)((long)map.get("brushSize"));
 
     }
-
-
     @Override
     public String toString() {
         return "Draw{" +

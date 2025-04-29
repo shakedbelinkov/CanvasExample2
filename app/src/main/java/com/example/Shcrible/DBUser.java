@@ -53,6 +53,7 @@ public class DBUser {
         });
     }
     public void setPoint(int point)
+            //update your score
     {
         db.collection("profiles").document(DBAuth.getUserUID()).update("points", FieldValue.increment(point)).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -66,6 +67,7 @@ public class DBUser {
 
     // get top ten users, and show my location
     public void getUserLeaderBoard()
+    // get top ten from all the players
     {
         db.collection("profiles").orderBy("points", Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -75,8 +77,5 @@ public class DBUser {
                 leaderListener.onLeaderBoardComplete(arr);
             }
         });
-
-
     }
-
 }

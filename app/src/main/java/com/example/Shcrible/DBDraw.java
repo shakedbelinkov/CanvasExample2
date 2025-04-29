@@ -30,8 +30,8 @@ public class DBDraw {
 
 
     private  TreeMap<String,HashMap<String,Object>> arrayToMap(ArrayList<Draw> draws)
+            //take arr and turn it to hashMap
     {
-
         TreeMap<String,HashMap<String,Object>> drawsAsMap = new TreeMap<>();
         for (int i = 0; i < draws.size(); i++) {
             // pass through arraylist

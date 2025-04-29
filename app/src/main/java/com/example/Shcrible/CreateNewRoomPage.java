@@ -43,6 +43,7 @@ public class CreateNewRoomPage extends AppCompatActivity  {
         //spinners have information for the game room
         Intent takeDetails=getIntent();
         int openAgain=takeDetails.getIntExtra("openAgain",2);
+        //if i am the host and i want to open the same room again
         if (openAgain==1)
         {
             numPlayers=takeDetails.getIntExtra("numPlayers",2);
@@ -51,19 +52,22 @@ public class CreateNewRoomPage extends AppCompatActivity  {
             startNextActivity(findViewById(R.id.startButton));
         }
         spinnerPlayer=findViewById(R.id.numOfPlayers);
+        //create new spinner for num of player
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.numberOfPlayer,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPlayer.setAdapter(adapter);
+        //create new spinner for num of rounds
         spinnerRounds=findViewById(R.id.numberOfRounds);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,R.array.numberOfRounds,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRounds.setAdapter(adapter2);
+        //create new spinner for time for a round
         spinnerTime=findViewById(R.id.timeForRound);
         ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(this,R.array.timeForRound
                 ,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTime.setAdapter(adapter3);
-
+        //start a listener for every spinner and update his value
         spinnerTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

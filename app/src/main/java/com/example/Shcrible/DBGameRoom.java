@@ -31,6 +31,7 @@ public class DBGameRoom {
     public DBGameRoom(){
     }
     public void addGameRoom(GameRoom gm,String uID)
+            //add new game room to firebase
     {
         db.collection("GameRooms").document(uID).set(gm).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -39,18 +40,9 @@ public class DBGameRoom {
             }
         });
     }
-    /*public void UpdatePoints(String uidRef,int point)
-    {
-        db.collection("profiles").document(uidRef).update("points",point).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful())
-                    addGameRoomComplete.onGameRoomComplete(task.isSuccessful());
-            }
-        });
-    }*/
 
     public void updateWord(String uidRef, String word) {
+        //update new word on fire base
 
         db.collection("GameRooms").document(uidRef).update("word",word).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -92,6 +84,4 @@ public class DBGameRoom {
             }
         });
     }
-
-
 }
