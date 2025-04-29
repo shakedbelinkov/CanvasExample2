@@ -207,43 +207,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
                 }
             }).start();
-
-            // Van Gogh
-            /*
-
-            countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
-
-                public void onTick(long millisUntilFinished) {
-                    ArrayList<Draw> arr =myCanvasView.getArrayList();
-                    if ( arr== null || arr.size() == 0)
-                        return;
-                    dbDraw.addDraw(arr);
-                    Log.d("addDrawCheck", "add draw");
-                }
-
-                public void onFinish() {
-                    // if( game is not over- there are still rounds to play
-
-                    if (turn <= gameroom.getRoundNum()) {
-                    //    dbDraw.addDraw(myCanvasView.getArrayList());   //???
-
-                        if (counter == gameroom.getCounterOfPlayers() - 1)
-                            counter = 0;
-                        else
-                            counter++;
-                        roundCounter++;
-                        dbDraw.removeDraw();
-                        setPoint();
-                        myCanvasView.delete();
-                 //       countDownTimer.cancel();
-                        draws.clear();
-                        SetDialog();
-                    }
-                }
-            }.start();
-
-             */
-
         }
         // Wannabe Van Gogh
         else {
@@ -286,33 +249,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     });
                 }
             }).start();
-/*
-            countDownTimer=new CountDownTimer(gameroom.getRoundTime() * 1000, 2000) {
-                public void onTick(long millisUntilFinished) {
-                }
-
-                public void onFinish() {
-                    if (turn <= gameroom.getRoundNum()) {
-                        if (counter == gameroom.getCounterOfPlayers() - 1)
-                            counter = 0;
-                        else
-                            counter++;
-                        roundCounter++;
-                        lr.remove();
-                        wordListener.remove();
-                        setPoint();
-                        myCanvasView.delete();
-                        draws.clear();
-                        SetDialog();
-                      //  countDownTimer.cancel();
-                        Log.d("GAME_TROUBLE ","player end round " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
-
-
-                    }
-                }
-            }.start();
-
- */
         }
     }
 
@@ -610,21 +546,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         dialog.setCancelable(false);
         dialog.show();
         winners.clear();
-
-
-        /*new CountDownTimer(3000,1000)
-        {
-            @Override
-            public void onTick(long l) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                dialog.dismiss();
-                startTurn();
-            }
-        }.start();*/
     }
 
     public void listenForStartRound()
