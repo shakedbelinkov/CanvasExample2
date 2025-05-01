@@ -103,7 +103,6 @@ public class WaitingRoom extends AppCompatActivity implements DBGameRoom.GameRoo
     }
     @Override
     public void onGameRoomComplete(boolean s) {
-        Toast.makeText(this,"GameRoom " + s,Toast.LENGTH_LONG).show();
         listenForGameUsers(uidRef);
     }
 

@@ -277,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     @Override
     public void onDrawComplete(boolean s) {
-        Toast.makeText(this, "Draw " + s, Toast.LENGTH_SHORT).show();
     }
 
     public void listenForDraws(String uidRef)
@@ -294,12 +293,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     arr = TreeMapToDraw(value.getData());
                     if (arr == null)
                         return;
-                    //     if(arr[0] !=null && arr[1] !=null && arr[2]!=null)
-
-                    Log.d("log arr", "onEvent: " + arr[0].toString() + "size: " + arr.length);
-                    Log.d("GAME_TROUBLE", "player " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
-                    if (typePlayer == 1)
-                        Toast.makeText(MainActivity.this, "GAME_TROUBLE " + DBAuth.getUserName(), Toast.LENGTH_SHORT).show();
                     myCanvasView.drawFromDB(arr);
                 }
             }
