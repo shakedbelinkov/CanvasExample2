@@ -55,7 +55,6 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         View contactView = inflater.inflate(R.layout.layout_chat, parent, false);
 
         // Return a new holder instance
-        //  AllPostsAdapter.ViewHolder viewHolder = new FirebaseUIPostAdapter.ViewHolder(contactView);
         return new ViewHolder(contactView);
     }
 

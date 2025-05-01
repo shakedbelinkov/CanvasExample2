@@ -45,14 +45,6 @@ public class Message {
         return name+": "+message;
     }
 
-   /* public FieldValue getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(FieldValue t) {
-        this.timestamp = t;
-    }*/
-
     public boolean isRight() {
         return isRight;
     }
