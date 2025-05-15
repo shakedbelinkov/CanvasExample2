@@ -1,6 +1,8 @@
 package com.example.Shcrible;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
 
     private DBAuth mauth;
     private String username;
+    private networkReceiver networkReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,31 +32,31 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        networkReceiver = new networkReceiver();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+            mauth = new DBAuth(this); // pass the activity reference to the class
 
-
-        mauth = new DBAuth(this); // pass the activity reference to the class
-
-        if(mauth.isUserSigned())
-        {
-            // move to Main activity>>
-            Intent intent=new Intent(OpeningPage.this, GameLobby.class);
-            intent.putExtra("name",username);
-            startActivity(intent);
-            finish();
-        }
+            if (mauth.isUserSigned()) {
+                // move to Main activity>>
+                Intent intent = new Intent(OpeningPage.this, GameLobby.class);
+                intent.putExtra("name", username);
+                startActivity(intent);
+                finish();
+            }
 
     }
 
     public void SignUp(View view) {
         //get the information of the user
-        TextView emailTv=findViewById(R.id.email);
-        TextView passwordTv=findViewById(R.id.password);
-        String email=emailTv.getText().toString();
-        String password=passwordTv.getText().toString();
-        TextView usernameTv=findViewById(R.id.username);
+            TextView emailTv = findViewById(R.id.email);
+            TextView passwordTv = findViewById(R.id.password);
+            String email = emailTv.getText().toString();
+            String password = passwordTv.getText().toString();
+            TextView usernameTv = findViewById(R.id.username);
 
-        username=usernameTv.getText().toString();
-        mauth.AddUser(email,password,username);
+            username = usernameTv.getText().toString();
+            mauth.AddUser(email, password, username);
     }
 
     @Override
@@ -99,5 +102,10 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
         Intent intent=new Intent(OpeningPage.this, LogInPage.class);
         startActivity(intent);
         finish();
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        unregisterReceiver(networkReceiver);
     }
 }
