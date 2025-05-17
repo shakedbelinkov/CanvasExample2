@@ -28,7 +28,7 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
 
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.layout_leaderboard,parent,false);
-
+        //change the data and the design according to the list of Player
         TextView tvNames = (TextView)view.findViewById(R.id.playerNameLB);
         TextView tvPoints = (TextView)view.findViewById(R.id.points);
         TextView tvPlace=(TextView)view.findViewById(R.id.placeLB);

@@ -6,18 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
-    private String name;
-    private String message;
-    private Map<String,Object> date = new HashMap<>();
-
-    //private FieldValue timestamp;
-    private boolean isRight=false;
+    private String name;//name of the one who sent the message
+    private String message;//the message
+    private Map<String,Object> date = new HashMap<>();//when was the message sent
+    private boolean isRight=false;// was the guess right
     public Message(String name,String message)
     {
         this.name=name;
         this.message=message;
         this.date.put("timestamp", FieldValue.serverTimestamp());
-        //this.timestamp = FieldValue.serverTimestamp();
 
     }
     public Message()

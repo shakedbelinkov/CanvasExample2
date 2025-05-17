@@ -12,6 +12,7 @@ public class Word {
     }
     public void ChooseWord()
     {
+        //choose random word from "words"
         Random random=new Random();
         clue="";
         clues=0;
@@ -29,6 +30,7 @@ public class Word {
     }
     public String Clue()
     {
+        //give a clue- string in this structure (first letter+"_"*size of the word)
         clue="";
         for (int i=0;i<word.length();i++)
         {

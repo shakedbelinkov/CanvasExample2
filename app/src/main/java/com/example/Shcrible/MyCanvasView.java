@@ -213,14 +213,6 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
             Log.d("DRAWS", draws.toString());
         }
         mPath.reset();
-
-/*
-        ArrayList<Draw> a = getArrayList();
-        if (a== null || a.size() == 0)
-            return;
-        db.addDraw(a);
-
- */
     }
     public void changeBrushColor(int color)
             //change the color of the brush to "color"

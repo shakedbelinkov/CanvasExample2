@@ -9,16 +9,25 @@ import android.widget.Toast;
 
 public class networkReceiver extends BroadcastReceiver {
     public static boolean isNetworkAvailable=true;
+    private checkNetworkComplete checkNetworkComplete;
+    public interface checkNetworkComplete{
+        public void NetworkNotWorking();
+        public void NetworkIsWorking();
+    }
+    public networkReceiver(checkNetworkComplete checkNetworkComplete)
+    {
+        this.checkNetworkComplete=checkNetworkComplete;
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
         networkReceiver.isNetworkAvailable=isNetworkAvailable(context);
-        /*if(isNetworkAvailable)
-            Toast.makeText(context,"Network is avialable",Toast.LENGTH_SHORT).show();
+        //check if you have internet
+        if (isNetworkAvailable)
+            checkNetworkComplete.NetworkIsWorking();
         else
-            Toast.makeText(context,"Network isn't avialable",Toast.LENGTH_SHORT).show();
-        */
+            checkNetworkComplete.NetworkNotWorking();
     }
     public boolean isNetworkAvailable(Context context)
             //check if there network available

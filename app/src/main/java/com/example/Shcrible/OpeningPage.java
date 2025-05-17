@@ -1,5 +1,6 @@
 package com.example.Shcrible;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -17,11 +18,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete {
+public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplete, DBUser.AddUserComplete,networkReceiver.checkNetworkComplete {
 
     private DBAuth mauth;
     private String username;
     private networkReceiver networkReceiver;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +34,14 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        networkReceiver = new networkReceiver();
+        //create object of networkReceiver and create new dialog
+        networkReceiver = new networkReceiver(this);
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
-            mauth = new DBAuth(this); // pass the activity reference to the class
+        dialog= new Dialog(this);
+        dialog.setContentView(R.layout.internet_dialog);
+        dialog.setCancelable(false);
+           mauth = new DBAuth(this); // pass the activity reference to the class
 
             if (mauth.isUserSigned()) {
                 // move to Main activity>>
@@ -44,7 +50,6 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
                 startActivity(intent);
                 finish();
             }
-
     }
 
     public void SignUp(View view) {
@@ -107,5 +112,15 @@ public class OpeningPage extends AppCompatActivity implements DBAuth.AuthComplet
     public void onStop(){
         super.onStop();
         unregisterReceiver(networkReceiver);
+    }
+    //if you have no internet
+    @Override
+    public void NetworkNotWorking() {
+        dialog.show();
+    }
+    //if you have internet
+    @Override
+    public void NetworkIsWorking() {
+        dialog.dismiss();
     }
 }

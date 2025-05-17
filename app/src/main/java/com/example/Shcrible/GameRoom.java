@@ -9,7 +9,6 @@ public class GameRoom {
     private int playerNum;//max players on this game room
     private int roundNum;//number of rounds
     private int roundTime;//time for a round
-    private int counter=0;
     private boolean isStart=false;
     private String word="";
     private boolean isRoundStart=false;
@@ -135,6 +134,7 @@ public class GameRoom {
         this.points = points;
     }
     public void updatePoint(int points,String name)
+            //add to the points of "name" - "points"
     {
         int index=0;
         while (!name.equals(this.names.get(index)))
@@ -142,6 +142,7 @@ public class GameRoom {
         this.points.set(index,points);
     }
     public void orderListByPoints()
+            //change the order of points and names by their points
     {
         for (int i=0;i<this.points.size()-1;i++)
         {

@@ -2,7 +2,9 @@ package com.example.Shcrible;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -40,7 +42,7 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete,DBUser.AddUserComplete {
+public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete,DBUser.AddUserComplete,networkReceiver.checkNetworkComplete {
 
     private MyCanvasView myCanvasView;
     public static String uidRef="", answer;
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private CountDownTimer countDownTimer;
     private Dialog dialog;
     private boolean isWin=false;
+    private networkReceiver networkReceiver;
+    private Dialog internetDialog;
 
 
     @Override
@@ -80,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         Intent takeDetails = getIntent();
         uidRef = takeDetails.getStringExtra("gameRoomCode");
         msgRef = db.collection("GameRooms").document(uidRef).collection("Message");
+        //create object of networkReceiver and create new dialog
+        networkReceiver = new networkReceiver(this);
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+        internetDialog= new Dialog(this);
+        internetDialog.setContentView(R.layout.internet_dialog);
+        internetDialog.setCancelable(false);
         initUI();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.startButton), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -90,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     public void initUI() {
         setRecyclerView();
+        //get the list of uids
         db.collection("GameRooms").document(uidRef).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -107,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     public void startTurn()
     //start new turn
     {
+        //counter-whose turn is it (index)
         if (counter == gameroom.getCounterOfPlayers() - 1)
             counter = 0;
         else
@@ -119,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         second = gameroom.getRoundTime();
         Timer();
         //if all the player have gm.getRoundNum games the game stop
-        if (gameroom.getRoundNum()*2  < roundCounter) {
+        if (gameroom.getRoundNum()*gameroom.getCounterOfPlayers()  < roundCounter) {
             SetEndGameDialog();
             return;
         }
@@ -144,23 +157,19 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             sendButton.setVisibility(View.INVISIBLE);
             typePlayer=1;
             myCanvasView.ChangePlayerType(typePlayer);
-            //if it your turn start countDownTimer, every five seconds it update
-            // Allon testing :-)
+            //if it your turn start Thread, every five seconds it update
 
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     for (int i = 0; i <gameroom.getRoundTime()/2; i++) {
 
-
-
                         try {
-
-
                             int finalI = i;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //update the list of draws to firebase
                                     ArrayList<Draw> arr = myCanvasView.getArrayList();
                                     if (arr == null || arr.size() == 0)
                                         return;
@@ -168,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                                     Log.d("addDrawCheck", "add draw " + finalI);
                                 }
                             });
-
+                            //there is delay so that the action occurs every two seconds
                             Thread.sleep(2000);
 
 
@@ -192,11 +201,9 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                         public void run() {
                             // Atlast some caffeine
                             if (turn <= gameroom.getRoundNum()) {
-                                //    dbDraw.addDraw(myCanvasView.getArrayList());   //???
                                 dbDraw.removeDraw();
                                 setPoint();
                                 myCanvasView.delete();
-                                //       countDownTimer.cancel();
                                 draws.clear();
                                 SetDialog();
 
@@ -221,14 +228,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
             typePlayer=2;
             myCanvasView.ChangePlayerType(typePlayer);
             listenForWord();
-        //    listenForDraws(uidRef);
-            Log.d("SHCRIBLE", "LR STARTED!");
 
 
 
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    //there is delay so that the action start at the end of the round
                     SystemClock.sleep(gameroom.getRoundTime()*1000);
                     // FINISHED THE GAME
                     // NEED TO ACCESS DISPLAY- RUN ON UI
@@ -419,6 +425,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void Timer() {
+        //start timer for "timeRound" seconds
         new CountDownTimer(gameroom.getRoundTime() * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 TextView timer = findViewById(R.id.timer);
@@ -436,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     }
 
     public void listenForWord() {
+        //start a listener for change of the word
         wordListener=db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
 
@@ -445,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     word.setWord(gm.getWord());
                     TextView textView = findViewById(R.id.word);
                     textView.setText(word.Clue());
+                    //when the player get the word he start listen for the draw
                     listenForDraws(uidRef);
                 }
             }
@@ -543,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     public void listenForStartRound()
     {
+        //listen if the round start so he can start the fuction "startTurn"
         startListener=db.collection("GameRooms").document(uidRef).addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -562,6 +572,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     public void SetEndGameDialog()
     {
+        //when the game was finish show the dialog
         Dialog dialog=new Dialog(this);
         dialog.setContentView(R.layout.end_game_dialog);
         dialog.setCancelable(false);
@@ -572,6 +583,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
         TextView t3=dialog.findViewById(R.id.thirdPlace);
         Button stopPlayButton=dialog.findViewById(R.id.stopPlayButton);
         Button keepPlayButton=dialog.findViewById(R.id.keepPlayButton);
+        //listener for the button of stop playing (move to GameLobby)
         stopPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -579,11 +591,13 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 startActivity(intent);
             }
         });
+        //listener for the button of keep playing on the dialog
         keepPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (uidRef.equals(DBAuth.getUserUID()))
                 {
+                    //if you are the host create the room again (go to CreateNewRoomPage)
                     Intent intent=new Intent(MainActivity.this,CreateNewRoomPage.class);
                     intent.putExtra("numPlayers",gameroom.getPlayerNum());
                     intent.putExtra("numRounds",gameroom.getRoundNum());
@@ -594,6 +608,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                 }
                 else
                 {
+                    //if you aren't the host, try to connect the room again (move to game lobby)
                     Intent intent=new Intent(MainActivity.this,GameLobby.class);
                     //1-yes,2-no
                     intent.putExtra("playAgain",1);
@@ -619,6 +634,15 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
 
     @Override
     public void onUserComplete(boolean s) {
-
+    }
+    //if you have no internet
+    @Override
+    public void NetworkNotWorking() {
+        internetDialog.show();
+    }
+    //if you have internet
+    @Override
+    public void NetworkIsWorking() {
+        internetDialog.dismiss();
     }
 }
