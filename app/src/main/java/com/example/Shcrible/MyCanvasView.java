@@ -23,13 +23,11 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
     private int mBackgroundColor;
     private Canvas mExtraCanvas;
     private Bitmap mExtraBitmap;
-    private String uidRef;
     private float mX, mY;
     private int updateCounter=0;
     private int lastUpdate=0;
     private static final float TOUCH_TOLERANCE = 4;//the pixel gap from which i will start drawing new path
     private ArrayList<Draw> draws=new ArrayList<>();// arr of draws for the db
-    private DBDraw db=new DBDraw(this);
     private int brushSize=12;
     private int typePlayer=1;
     MyCanvasView(Context context, Bitmap mExtraBitmap) {

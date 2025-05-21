@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shcrible</string>
+    <string name="app_name" translatable="false">Shcrible</string>
     <string-array name="numberOfPlayer">
         <item>2</item>
         <item>3</item>
