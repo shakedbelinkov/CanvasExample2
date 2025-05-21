@@ -57,7 +57,7 @@ public class DBDraw {
         });
     }
     public void removeDraw()
-    //add draw to collection on firebase
+    //add remove to collection on firebase
     {
         db.collection("GameRooms").document(MainActivity.uidRef).collection("Draw").document(MainActivity.uidRef).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
