@@ -16,7 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 
-public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
+public class MyCanvasView extends View  {
     private Paint mPaint;
     private Path mPath;
     private int mDrawColor;
@@ -239,10 +239,6 @@ public class MyCanvasView extends View implements DBDraw.AddDrawComplete {
         mPaint.setStrokeWidth(size);
     }
 
-    @Override
-    public void onDrawComplete(boolean s) {
-
-    }
     public ArrayList<Draw>getArrayList()
     {
         //take the new updates from "draws"
