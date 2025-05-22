@@ -25,10 +25,7 @@ import java.util.List;
 
 public class LeaderBoard extends AppCompatActivity implements DBUser.LeaderBoardComplete,networkReceiver.checkNetworkComplete {
     private ListView listView;
-    private ArrayAdapter<Player> player;
     private PlayerAdapter playerAdapter;
-    private CollectionReference playerRef;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBUser dbUser;
     private networkReceiver networkReceiver;
     private Dialog dialog;
