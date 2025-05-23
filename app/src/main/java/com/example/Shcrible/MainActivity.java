@@ -45,7 +45,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawComplete,DBMessage.AddMessageComplete,DBGameRoom.GameRoomComplete,DBUser.AddUserComplete,networkReceiver.checkNetworkComplete {
 
     private MyCanvasView myCanvasView;
-    public static String uidRef="", answer;
+    public static String uidRef="";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DBDraw dbDraw;
     private DBMessage dbMessage;
@@ -58,13 +58,10 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
-    private ArrayList<Message> messages = new ArrayList<>();
     private int second;//second dor timer
-    private int turn = 1;
     private Word word = new Word();
     private ListenerRegistration lr, wordListener,startListener;
     private int typePlayer=1;
-    private CountDownTimer countDownTimer;
     private Dialog dialog;
     private boolean isWin=false;
     private networkReceiver networkReceiver;
@@ -199,15 +196,12 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // Atlast some caffeine
-                            if (turn <= gameroom.getRoundNum()) {
                                 dbDraw.removeDraw();
                                 setPoint();
                                 myCanvasView.delete();
                                 draws.clear();
                                 SetDialog();
 
-                            }
                         }
                     });
 
@@ -241,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (turn <= gameroom.getRoundNum()) {
                                 lr.remove();
                                 wordListener.remove();
                                 setPoint();
@@ -250,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
                                 SetDialog();
                                 //  countDownTimer.cancel();
                                 Log.d("GAME_TROUBLE ", "player end round " + DBAuth.getUserName() + SystemClock.currentThreadTimeMillis());
-                            }
+
                         }
                     });
                 }
