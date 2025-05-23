@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements DBDraw.AddDrawCom
     private GameRoom gameroom;
     private ArrayList<String> uIDs,winners = new ArrayList<>();
     private ArrayList<Draw> draws = new ArrayList<>();
-    private int counter = -1,roundCounter=1;//count whose turn is it
+    private int counter = -1,roundCounter=0;//count whose turn is it
     private RecyclerView lv;
     private MessageAdapter messageAdapter;
     private CollectionReference msgRef;
